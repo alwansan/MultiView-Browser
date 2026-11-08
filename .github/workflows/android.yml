@@ -29,8 +29,11 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
-      - name: Install SDK Platform
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Verify preinstalled SDK 35
+        run: |
+          test -f "$ANDROID_HOME/platforms/android-35/android.jar"
+          test -x "$ANDROID_HOME/build-tools/35.0.0/aapt2"
+          echo "Android SDK 35 preinstalled and ready"
       - name: Source checks
         run: python3 scripts/source_audit.py
       - name: Assemble debug APK
