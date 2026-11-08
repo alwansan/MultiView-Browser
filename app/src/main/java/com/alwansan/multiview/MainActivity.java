@@ -37,6 +37,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.graphics.drawable.RippleDrawable;
+import android.content.res.ColorStateList;
 import android.widget.ProgressBar;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -176,6 +179,13 @@ public final class MainActivity extends Activity {
         g.setColor(color); g.setCornerRadius(dp(radius));
         return g;
     }
+    private GradientDrawable paneSurface(boolean selected) {
+        GradientDrawable g=rounded(cardColor(),13);
+        g.setStroke(dp(selected?2:1),
+            selected ? Color.parseColor("#38D8E7") :
+                (dark ? Color.parseColor("#3B5271") : Color.parseColor("#BBCBE2")));
+        return g;
+    }
     private Button button(String text, Runnable action) {
         Button b = new Button(this);
         b.setText(text);
@@ -188,7 +198,9 @@ public final class MainActivity extends Activity {
         b.setMinimumWidth(0);
         b.setMinWidth(0);
         b.setContentDescription(text);
-        b.setBackground(rounded(cardColor(), 11));
+        b.setBackground(new RippleDrawable(
+            ColorStateList.valueOf(Color.argb(dark?65:40,54,202,238)),
+            rounded(cardColor(),11),null));
         b.setOnClickListener(v -> action.run());
         return b;
     }
@@ -201,28 +213,43 @@ public final class MainActivity extends Activity {
         getWindow().setStatusBarColor(bg());
         getWindow().setNavigationBarColor(bg());
         topBar.removeAllViews();
+        topBar.setBackground(rounded(surface(),13));
+        topBar.setElevation(dp(2));
         topBar.setPadding(dp(12), dp(6), dp(12), dp(5));
         topBar.setGravity(Gravity.CENTER_VERTICAL);
 
         LinearLayout brand = new LinearLayout(this);
-        brand.setOrientation(LinearLayout.VERTICAL);
+        brand.setOrientation(LinearLayout.HORIZONTAL);
         brand.setGravity(Gravity.CENTER_VERTICAL);
+        ImageView logo=new ImageView(this);
+        logo.setImageResource(R.drawable.ic_launcher_foreground);
+        logo.setBackground(rounded(Color.parseColor(dark?"#103154":"#DCEEFF"),12));
+        logo.setContentDescription(t(R.string.app_name));
+        logo.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        LinearLayout.LayoutParams iconLp=new LinearLayout.LayoutParams(dp(43),dp(43));
+        iconLp.setMargins(0,0,dp(9),0);
+        brand.addView(logo,iconLp);
+        LinearLayout words=new LinearLayout(this);
+        words.setOrientation(LinearLayout.VERTICAL);
+        words.setGravity(Gravity.CENTER_VERTICAL);
         TextView name = new TextView(this);
-        name.setText("MultiView");
-        name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        name.setTextSize(19);
+        name.setText(t(R.string.app_name));
+        name.setTypeface(Typeface.create("sans-serif-medium",Typeface.BOLD));
+        name.setTextSize(16);
         name.setTextColor(ink());
         name.setSingleLine(true);
-        brand.addView(name, new LinearLayout.LayoutParams(-1,dp(25)));
+        name.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        words.addView(name, new LinearLayout.LayoutParams(-1,dp(25)));
         TextView detail = new TextView(this);
-        detail.setText(panes.size()+" "+t(R.string.live_views)+"  ·  "+
+        detail.setText(panes.size()+" "+t(R.string.live_views)+" · "+
             (layoutMode==0 ? (fitGrid?t(R.string.fit_grid):t(R.string.scroll_grid)) : t(modeLabels[layoutMode])));
         detail.setTextSize(10);
-        detail.setLetterSpacing(0.07f);
         detail.setTextColor(muted());
         detail.setSingleLine(true);
-        brand.addView(detail,new LinearLayout.LayoutParams(-1,dp(18)));
+        words.addView(detail,new LinearLayout.LayoutParams(-1,dp(18)));
+        brand.addView(words,new LinearLayout.LayoutParams(-1,-1));
         title = name;
+        brand.setContentDescription(t(R.string.switch_view));
         brand.setOnClickListener(v -> selectFocusedPane());
         topBar.addView(brand,new LinearLayout.LayoutParams(0,-1,1));
 
@@ -242,6 +269,8 @@ public final class MainActivity extends Activity {
         topBar.addView(plus,new LinearLayout.LayoutParams(dp(39),dp(41)));
 
         bottomBar.removeAllViews();
+        bottomBar.setBackground(rounded(surface(),13));
+        bottomBar.setElevation(dp(3));
         bottomBar.setPadding(dp(5),dp(6),dp(5),dp(6));
         bottomBar.setGravity(Gravity.CENTER_VERTICAL);
         navButton("◫ "+t(R.string.layout),this::showLayouts,1.08f);
@@ -1149,7 +1178,7 @@ public final class MainActivity extends Activity {
         // Pane.card (which contains the live WebView) without rebuilding its children.
         // Re-adding number/address to another parent used to crash on app startup.
         void styleCard() {
-            card.setBackground(rounded(cardColor(),12));
+            card.setBackground(paneSurface(panes.indexOf(this)==active));
             if (!headerBuilt) {
                 headerBuilt = true;
                 header.setPadding(dp(4),dp(3),dp(4),0);

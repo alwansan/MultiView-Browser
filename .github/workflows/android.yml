@@ -49,6 +49,8 @@ jobs:
           mkdir -p build/restore-test-classes
           javac -d build/restore-test-classes app/src/main/java/com/alwansan/multiview/SessionRestorePlan.java scripts/SessionRestorePlanTest.java
           java -cp build/restore-test-classes com.alwansan.multiview.SessionRestorePlanTest
+      - name: Validate brand assets and bilingual documentation
+        run: python3 scripts/brand_audit.py
       - name: Source checks
         run: python3 scripts/source_audit.py
       - name: Assemble debug APK

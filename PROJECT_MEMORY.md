@@ -161,3 +161,11 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Included: FGS optional session guard + notification stop, minimize Back, critical WebView recovery, bounded nav-history and scroll metadata, lazy cold-start restore, main Links shortcut with bookmarks/history and saved sets, configChanges for locale/screen, POCO battery settings helper, optional secure stable-signing workflow.
 - Stable signing not configured: CI output explicitly reports fallback ephemeral debug signature. See docs/SIGNING_SETUP_AR.md; owner secret setup remains necessary if stable updates are desired.
 - No hardware validation yet for v0.4.0. Android no-root cannot promise zero reloads or never being killed. Focus on per-device 5/10/20 tab and screen-off tests.
+
+## Visual identity & bilingual repository, 2026-11-08
+- New original neon navy/cyan/gold 4-pane logo system. GitHub pages: README.md English and README.ar.md Arabic, both have visible language-switch links. GitHub Markdown doesn't implement an automatic language switch button; relative links are the dependable equivalent.
+- Repository illustrations: assets/brand/icon.svg, hero-en.svg, hero-ar.svg, features.svg, layouts.svg. These are illustrations, explicitly NOT live app screenshots.
+- Android AdaptiveIconDrawable foreground/background plus monochrome theme icon and branded notification icon; color and theme resources. Native header now shows branding glyph and accent-bordered active pane, ripple touch feedback.
+- Android minimum API 26 so mipmap-anydpi-v26 adaptive icons are supported. Source reference https://developer.android.com/develop/ui/compose/system/icon_design_adaptive.
+- Brand assets validated as SVG and Android XML in scripts/brand_audit.py; CI gate added.
+- App version 0.4.1-preview, versionCode 9. Await Actions/device verification.

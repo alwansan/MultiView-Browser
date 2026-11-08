@@ -83,3 +83,8 @@ Do not convert PENDING into PASS without run/device evidence.
 - [PASS] No signing secrets supplied: fallback debug signing step successfully skipped stable signer.
 - [PENDING] Real POCO Android 15: FGS specialUse start/stop notification; Home then 10/30-minute absence; WebView renderer process recovery; 20-tab cold start; Links picker, saved sets, Arabic/English relayout.
 - [LIMIT] No process or foreground service can guarantee indefinite continuous WebView execution, and WebView.saveState doesn't save DOM/unsent messages.
+
+## 2026-11-08 — visual brand and bilingual documentation
+- [IMPLEMENTED/CI PENDING] English/Arabic README landing pages with clickable switch, original SVG icon/banners/features/layouts and clearly marked concept illustrations.
+- [IMPLEMENTED/CI PENDING] Android adaptive launcher icon and monochrome themed icon, branded notification icon, new theme/brand colors, active-pane accent border, ripple button feedback.
+- [IMPLEMENTED/CI PENDING] CI script validates SVG/XML assets and local bilingual links; v0.4.1 preview build.

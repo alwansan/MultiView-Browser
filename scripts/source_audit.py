@@ -90,3 +90,12 @@ assert 'SessionRestorePlan.eager' in source
 assert 'if(!autoLoad)pane.showRecovery();' in source
 assert 'pane.recoveryNotice!=null?pane.pendingScrollY:pane.web.getScrollY()' in source
 print('Lazy cold-start restoration guards passed.')
+
+# Branding and Android adaptive icon regression guards
+assert 'ImageView logo=new ImageView(this)' in source
+assert 'R.drawable.ic_launcher_foreground' in source
+assert 'paneSurface(panes.indexOf(this)==active)' in source
+assert 'new RippleDrawable(' in source
+assert 'android:icon="@mipmap/ic_launcher"' in manifest
+assert 'android:theme="@style/MultiViewTheme"' in manifest
+print('Branding and launcher integration guards passed.')

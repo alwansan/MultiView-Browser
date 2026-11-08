@@ -45,7 +45,7 @@ public final class SessionKeepAliveService extends Service {
         PendingIntent stopAction=PendingIntent.getService(this,1,stop,pendingFlags);
         Notification.Builder b=Build.VERSION.SDK_INT>=26
             ?new Notification.Builder(this,CHANNEL):new Notification.Builder(this);
-        b.setSmallIcon(android.R.drawable.ic_menu_view)
+        b.setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(getString(R.string.keep_session))
             .setContentText(getString(R.string.keep_session_notification))
             .setContentIntent(view)
