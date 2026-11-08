@@ -34,6 +34,11 @@ jobs:
           test -f "$ANDROID_HOME/platforms/android-35/android.jar"
           test -x "$ANDROID_HOME/build-tools/35.0.0/aapt2"
           echo "Android SDK 35 preinstalled and ready"
+      - name: Test adaptive grid planning
+        run: |
+          mkdir -p build/grid-test-classes
+          javac -d build/grid-test-classes app/src/main/java/com/alwansan/multiview/GridSizing.java scripts/GridSizingTest.java
+          java -cp build/grid-test-classes com.alwansan.multiview.GridSizingTest
       - name: Source checks
         run: python3 scripts/source_audit.py
       - name: Assemble debug APK

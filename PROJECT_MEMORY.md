@@ -61,3 +61,14 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - SHA256 4e779bf623f566086a5c70b95cf38d1ed68c932ceec9631dcd9181478810e8a1.
 - Passed Gradle assembleDebug, source_audit regression, artifact upload and release upload. **Runtime on owner device still pending**.
 - Owner next: uninstall older debug build only if signature mismatch / installation fails, then install preview APK; test app starts, 2->5 panes, Grid/Vertical/Horizontal/Focus cycling and URL typing. Report screenshot/log if another crash.
+
+## v0.2.0 UX pass (2026-11-08)
+- Owner personally confirmed v0.1.1 no longer crashes at startup.
+- Adaptive grid: GridSizing.java computes phone/tablet column count; at 393dp and 5 panes => 2 columns / 3 rows; fit mode sizes row based on viewport height (provided each >=148dp), else scroll fallback. 1–6 eligible for Fit Grid; 7–20 remain scrollable grid to avoid unusably small tiles.
+- Pane header uses existing mounted controls; fit mode hides redundant toolbar row while keeping URL field, focus badge and overflow menu. Never reload pages on layout switch; use onDestroy explicit cleanup.
+- Main chrome: clearer site/pane labels, access to layouts, pane chooser, link distributor, saved library and tools; quick ChatGPT action; confirmed source-of-truth website remains URL.
+- Added progress bars, titles and layout planning test runnable via plain javac in Actions. Do not mark runtime behavior verified until phone testing.
+- Research: Android docs on webview memory / renderer lifecycle and SDK 35 system bars:
+  https://developer.android.com/develop/ui/views/layout/webapps/manage-webview-memory
+  https://developer.android.com/develop/ui/views/layout/webapps/handle-termination
+  https://developer.android.com/develop/ui/views/layout/edge-to-edge

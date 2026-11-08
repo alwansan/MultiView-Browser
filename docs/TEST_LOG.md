@@ -21,3 +21,10 @@ Do not convert PENDING into PASS without run/device evidence.
 - Fix: build header once via `headerBuilt`, keep original edit field and WebView; update colors/index without replacing header children. This additionally avoids discarding in-progress URL input during focus/layout change.
 - [PASS] v0.1.1-prototype CI compile / source guards / publish: run 42499479881 (success), commit d9ae965775744a1502644331e7e0918ab40b2160. Artifact 13625070608. Release asset 724484870 (29,633 bytes) at https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk. SHA256 4e779bf623f566086a5c70b95cf38d1ed68c932ceec9631dcd9181478810e8a1.
 - [PENDING] Confirm launch + layout reflow on owner phone. Build success alone cannot prove runtime fix.
+
+## 2026-11-08 — v0.2.0 UX and responsive grid
+- [PASS owner report] v0.1.1 opens and previous startup crash is no longer observed on test Android phone. This is owner-confirmed runtime feedback.
+- Proposed upgrades implemented: Fit grid for <=6 panes with viewport-driven row heights (responsive keyboard/orientation), Scroll grid alternative, refined global top/bottom toolbar, richer pane chooser, one-click focus from tile badge, compact headers, page loading progress, safe manual reload confirmation, live 1–20 pane retention and cleanup on Activity destroy.
+- GridSizing pure-Java test added to CI with 393dp/5-pane and various tablet/phone/memory/layout cases.
+- [PENDING] v0.2.0 Actions compile and release verification; then owner visual/UX test on Android 15.
+- [PENDING] Long ChatGPT thread/keyboard/landscape/renderer-restart performance measurements on phone.

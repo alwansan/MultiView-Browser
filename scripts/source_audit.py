@@ -18,3 +18,13 @@ assert 'header.removeAllViews()' not in pane_style, 'Rebuilding header reparents
 assert 'upper.addView(number' in pane_style and 'upper.addView(address' in pane_style
 assert 'retintHeaderButtons(header)' in pane_style
 print('Pane header lifecycle regression checks passed.')
+
+# UX pass regression checks
+assert 'GridSizing.columns' in source and 'GridSizing.shouldFit' in source
+assert 'updateGridRowHeights' in source
+assert 'if (!headerBuilt)' in source
+assert 'header.removeAllViews()' not in source
+assert 'onDestroy()' in source and 'p.web.destroy()' in source
+assert 'onProgressChanged' in source
+assert 'fitGrid' in source
+print('Adaptive-layout and lifecycle source checks passed.')
