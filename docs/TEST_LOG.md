@@ -28,3 +28,8 @@ Do not convert PENDING into PASS without run/device evidence.
 - GridSizing pure-Java test added to CI with 393dp/5-pane and various tablet/phone/memory/layout cases.
 - [PENDING] v0.2.0 Actions compile and release verification; then owner visual/UX test on Android 15.
 - [PENDING] Long ChatGPT thread/keyboard/landscape/renderer-restart performance measurements on phone.
+
+## 2026-11-08 — v0.2.1 additional fixes
+- [IMPLEMENTED, runtime unverified] Popup tab transport for user gestures, per-pane desktop UA restore, batched pane counts, explicit WebView removal, restricted external URI dispatch, Focus Back returns to Grid.
+- [PENDING] Build + publication / APK SHA.
+- [PENDING] User Android 15 five-pane, ChatGPT login, target-blank, desktop and restoration tests.

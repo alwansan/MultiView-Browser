@@ -57,6 +57,7 @@ public final class MainActivity extends Activity {
     private static final int MAX_PANES = 20;
     private static final int FILE_REQUEST = 42;
     private static final String HOME = "https://www.google.com/";
+    private static final String DESKTOP_UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36";
     private final ArrayList<Pane> panes = new ArrayList<>();
     private final ArrayList<LinearLayout> gridRows = new ArrayList<>();
     private LinearLayout root;
@@ -293,23 +294,36 @@ public final class MainActivity extends Activity {
                 try {
                     int n=Integer.parseInt(input.getText().toString());
                     n=Math.max(1,Math.min(MAX_PANES,n));
-                    while(panes.size()<n) addPane("about:blank");
-                    while(panes.size()>n) removePane(panes.size()-1);
+                    resizePanes(n);
                 } catch(NumberFormatException ex) { toast("Enter a number from 1 to 20"); }
             }).setNegativeButton("Cancel",null).show();
     }
-    private void addPane(String url) {
-        Pane pane = new Pane(url);
-        panes.add(pane);
-        if(!booting){ active=panes.size()-1; renderLayout(); rebuildChrome(); saveSession(); }
+    private void addPane(String url) {addPane(url,false);}
+    private void addPane(String url,boolean desktop) {
+        panes.add(new Pane(url,desktop,true));
+        if(!booting){active=panes.size()-1;renderLayout();rebuildChrome();saveSession();}
+    }
+    private void resizePanes(int requested) {
+        int target=Math.max(1,Math.min(MAX_PANES,requested));
+        boolean wasBooting=booting;
+        booting=true;
+        while(panes.size()<target)panes.add(new Pane("about:blank",false,true));
+        while(panes.size()>target)disposePane(panes.remove(panes.size()-1));
+        booting=wasBooting;
+        active=Math.max(0,Math.min(active,panes.size()-1));
+        renderLayout();rebuildChrome();saveSession();
+    }
+    private void disposePane(Pane pane) {
+        ViewGroup parent=(ViewGroup)pane.card.getParent();
+        if(parent!=null)parent.removeView(pane.card);
+        pane.card.removeView(pane.web);
+        pane.web.stopLoading();
+        pane.web.destroy();
     }
     private void removePane(int index) {
         if (panes.size()<=1 || index<0 || index>=panes.size()) return;
         Pane pane=panes.remove(index);
-        ViewGroup parent=(ViewGroup)pane.card.getParent();
-        if(parent!=null) parent.removeView(pane.card);
-        pane.web.stopLoading();
-        pane.web.destroy();
+        disposePane(pane);
         active=Math.min(active,panes.size()-1);
         renderLayout(); rebuildChrome(); saveSession();
     }
@@ -464,9 +478,11 @@ public final class MainActivity extends Activity {
             fitGrid=state.optBoolean("fitGrid",true);
             active=state.optInt("active",0);
             JSONArray urls=state.optJSONArray("urls");
-            if(urls!=null) for(int i=0;i<Math.min(urls.length(),MAX_PANES);i++) {
+            JSONArray flags=state.optJSONArray("desktopFlags");
+            if(urls!=null)for(int i=0;i<Math.min(urls.length(),MAX_PANES);i++){
                 String url=urls.optString(i,"about:blank");
-                addPane(url.startsWith("http")||url.equals("about:blank") ? url : "about:blank");
+                addPane(url.startsWith("http")||url.equals("about:blank")?url:"about:blank",
+                    flags!=null && flags.optBoolean(i,false));
             }
         } catch(Exception ignored){}
     }
@@ -477,11 +493,13 @@ public final class MainActivity extends Activity {
         try {
             JSONObject state=new JSONObject();
             JSONArray urls=new JSONArray();
+            JSONArray desktops=new JSONArray();
             for(Pane pane:panes) {
                 String url=pane.web.getUrl();
                 urls.put(url==null?pane.initialUrl:url);
+                desktops.put(pane.desktop);
             }
-            state.put("urls",urls);state.put("layout",layoutMode);
+            state.put("urls",urls);state.put("desktopFlags",desktops);state.put("layout",layoutMode);
             state.put("active",active);state.put("dark",dark);state.put("awake",keepAwake);
             state.put("fitGrid",fitGrid);
             getPreferences(0).edit().putString("session",state.toString()).apply();
@@ -498,6 +516,7 @@ public final class MainActivity extends Activity {
         for(Pane p:panes) {
             ViewGroup parent=(ViewGroup)p.card.getParent();
             if(parent!=null)parent.removeView(p.card);
+            p.card.removeView(p.web);
             p.web.stopLoading();
             p.web.destroy();
         }
@@ -506,7 +525,9 @@ public final class MainActivity extends Activity {
     }
     @Override public void onBackPressed() {
         if(panes.size()>0 && panes.get(active).web.canGoBack())panes.get(active).web.goBack();
-        else super.onBackPressed();
+        else if(layoutMode==3 && panes.size()>1){
+            layoutMode=0;renderLayout();rebuildChrome();saveSession();
+        }else super.onBackPressed();
     }
     @Override protected void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
@@ -576,8 +597,9 @@ public final class MainActivity extends Activity {
         String pageTitle="New view";
         boolean desktop=false;
         boolean headerBuilt=false;
-        Pane(String url) {
+        Pane(String url,boolean startDesktop,boolean autoLoad) {
             initialUrl=url;
+            desktop=startDesktop;
             card=new LinearLayout(MainActivity.this);
             card.setOrientation(LinearLayout.VERTICAL);
             header=new LinearLayout(MainActivity.this);
@@ -590,11 +612,12 @@ public final class MainActivity extends Activity {
             number=new TextView(MainActivity.this);
             configureWeb();
             styleCard();
-            web.loadUrl(initialUrl);
+            if(autoLoad)web.loadUrl(initialUrl);
         }
         private void configureWeb() {
             WebSettings s=web.getSettings();
             s.setJavaScriptEnabled(true);
+            if(desktop)s.setUserAgentString(DESKTOP_UA);
             s.setDomStorageEnabled(true);
             s.setDatabaseEnabled(true);
             s.setSupportZoom(true);
@@ -617,7 +640,11 @@ public final class MainActivity extends Activity {
                     Uri uri=request.getUrl();
                     String scheme=uri.getScheme();
                     if("http".equalsIgnoreCase(scheme)||"https".equalsIgnoreCase(scheme)||"about".equalsIgnoreCase(scheme))return false;
-                    try { startActivity(new Intent(Intent.ACTION_VIEW,uri)); } catch(Exception e){toast("No handler for this link");}
+                    if("mailto".equalsIgnoreCase(scheme)||"tel".equalsIgnoreCase(scheme)||
+                       "sms".equalsIgnoreCase(scheme)){
+                        try{startActivity(new Intent(Intent.ACTION_VIEW,uri));}
+                        catch(Exception e){toast("No app for link");}
+                    }else toast("Unsupported external link blocked");
                     return true;
                 }
                 @Override public void onPageStarted(WebView view,String url,android.graphics.Bitmap favicon) {
@@ -639,8 +666,9 @@ public final class MainActivity extends Activity {
                         panes.remove(index);
                         ViewGroup parent=(ViewGroup)card.getParent();
                         if(parent!=null)parent.removeView(card);
+                        card.removeView(view);
                         view.destroy();
-                        Pane replacement=new Pane(current);
+                        Pane replacement=new Pane(current,desktop,true);
                         panes.add(index,replacement);
                         active=index;renderLayout();saveSession();
                     }
@@ -648,6 +676,21 @@ public final class MainActivity extends Activity {
                 }
             });
             web.setWebChromeClient(new WebChromeClient(){
+                @Override public boolean onCreateWindow(WebView source,boolean dialog,
+                                                         boolean userGesture,android.os.Message resultMsg) {
+                    if(!userGesture||panes.size()>=MAX_PANES){
+                        if(userGesture)toast("Maximum 20 views");
+                        return false;
+                    }
+                    Pane popup=new Pane("about:blank",false,false);
+                    panes.add(popup);active=panes.size()-1;
+                    renderLayout();rebuildChrome();saveSession();
+                    WebView.WebViewTransport transport=(WebView.WebViewTransport)resultMsg.obj;
+                    transport.setWebView(popup.web);
+                    resultMsg.sendToTarget();
+                    toast("Opened view "+panes.size());
+                    return true;
+                }
                 @Override public void onProgressChanged(WebView view,int progress) {
                     if(loading!=null){
                         loading.setProgress(progress);
@@ -768,10 +811,8 @@ public final class MainActivity extends Activity {
                         case 1:
                             desktop=!desktop;
                             WebSettings s=web.getSettings();
-                            s.setUserAgentString(desktop?
-                                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36":
-                                WebSettings.getDefaultUserAgent(MainActivity.this));
-                            s.setUseWideViewPort(true);web.reload();break;
+                            s.setUserAgentString(desktop?DESKTOP_UA:WebSettings.getDefaultUserAgent(MainActivity.this));
+                            s.setUseWideViewPort(true);web.reload();saveSession();break;
                         case 2: screenshot(this);break;
                         case 3:
                             ((ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("URL",url==null?"":url));

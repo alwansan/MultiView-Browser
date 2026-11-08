@@ -28,3 +28,10 @@ assert 'onDestroy()' in source and 'p.web.destroy()' in source
 assert 'onProgressChanged' in source
 assert 'fitGrid' in source
 print('Adaptive-layout and lifecycle source checks passed.')
+
+assert 'onCreateWindow(WebView source' in source and 'WebView.WebViewTransport' in source
+assert 'if(!userGesture||panes.size()>=MAX_PANES)' in source
+assert 'desktopFlags' in source
+assert 'private void resizePanes' in source
+assert 'pane.card.removeView(pane.web)' in source
+print('Popup/session/lifecycle guards passed.')

@@ -72,3 +72,12 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
   https://developer.android.com/develop/ui/views/layout/webapps/manage-webview-memory
   https://developer.android.com/develop/ui/views/layout/webapps/handle-termination
   https://developer.android.com/develop/ui/views/layout/edge-to-edge
+
+## v0.2.1 follow-on: browser navigation and tab workflow (2026-11-08)
+- User-gesture-only WebChromeClient.onCreateWindow opens the requested window in a new live pane through WebViewTransport. Non-gesture popups rejected, max 20.
+- Batching 1–20 resize avoids re-rendering for each intermediate size, significantly reducing layout churn.
+- Persist Desktop UA per pane in session JSON and re-apply before first WebView.loadUrl after restart.
+- On explicit pane close / Activity.onDestroy / renderer-gone, detach WebView from card before destroy to avoid leaks.
+- Android Back in single Focus mode returns to grid when no website history is left and multiple pages exist.
+- Only mailto/tel/sms URI schemes dispatched to external apps; other non-http(s) external schemes blocked.
+- Source remains original. New versionCode 4 and v0.2.1-preview. Actions and device validation pending.
