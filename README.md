@@ -14,7 +14,7 @@ A native Android multi-pane browser rebuilt from independently written source fo
 
 **GitHub Release:** https://github.com/alwansan/MultiView-Browser/releases/tag/preview-latest
 
-**Status:** v0.2.2 experimental: Fit Grid, Scroll Grid, Vertical, Horizontal and Focus; loading indicators, browser popups, per-pane Desktop flags, quick ChatGPT link, saved library, pane duplication and zoom controls. Compilation, device compatibility and behavioral parity are tested in stages; do not confuse repository commit with a proven working APK. Android can still reclaim WebView renderer memory.
+**Status:** v0.2.2 experimental (CI build tested; physical Android runtime still requires confirmation): Fit Grid, Scroll Grid, Vertical, Horizontal and Focus; loading indicators, browser popups, per-pane Desktop flags, quick ChatGPT link, saved library, pane duplication and zoom controls. Compilation, device compatibility and behavioral parity are tested in stages; do not confuse repository commit with a proven working APK. Android can still reclaim WebView renderer memory.
 
 ### Building
 
@@ -35,3 +35,9 @@ The push-triggered workflow uploads `app-debug.apk` as a build artifact.
 - [Copyable restoration prompt (Arabic)](RESTORE_AR.md)
 
 The original commercial APK and licensed assets are intentionally **not** stored in this repository. This app does not affiliate with third-party websites.
+
+## On-device testing
+
+See [Arabic device checklist](docs/DEVICE_TEST_AR.md). Start with five pages in Fit Grid and verify focus/navigation, real ChatGPT typing, file chooser and rotation. **No account credentials, auth cookies or personal chat text should be uploaded to GitHub.**
+
+Current verified preview: https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk — SHA256 `878d14ba0d101aadfab70e9949c248db95d0b2348865acc4d3134cc57cbafe87`.

@@ -86,3 +86,11 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Multi-URL distributor now splits by line (not whitespace) and loads URLs directly, retaining active selection, and performs one session persistence update. This avoids doing a full layout reflow per URL. Supports a single URL in all panes, or per-pane lines.
 - Pane overflow now includes Duplicate view, open in external browser, zoom +/- alongside bookmark, Desktop mode, screenshot, copy, share, move, close.
 - Version code 5, version 0.2.2-preview. Verify new Actions result + release SHA; phone screenshot and runtime checks still needed.
+
+## Verified v0.2.2 preview delivery — 2026-11-08
+- CI run 42501943269 SUCCESS including GridSizing JVM test, source guards, Gradle assembleDebug, artifact upload, rolling prerelease upload.
+- Source commit: cb3a6997550aa600f15440c5bc83930246c38a47; artifact id 13625991380, release asset id 724567454, bytes 34341.
+- Direct APK: https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk
+- SHA256: 878d14ba0d101aadfab70e9949c248db95d0b2348865acc4d3134cc57cbafe87
+- Owner already confirmed v0.1.1 fixed startup crash. New 0.2.2 layout, ChatGPT, popup, screenshot, long-chat performance have NOT been physically tested yet.
+- Next iteration: owner-side screenshots on Android 15, 5-pane Fit Grid and Focus, orientation/keyboard, popup and sign-in tests, identify on-device defects; continue UI polish, memory measurements, stable signing via secure GitHub Secrets when feasible.

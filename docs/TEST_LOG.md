@@ -26,7 +26,7 @@ Do not convert PENDING into PASS without run/device evidence.
 - [PASS owner report] v0.1.1 opens and previous startup crash is no longer observed on test Android phone. This is owner-confirmed runtime feedback.
 - Proposed upgrades implemented: Fit grid for <=6 panes with viewport-driven row heights (responsive keyboard/orientation), Scroll grid alternative, refined global top/bottom toolbar, richer pane chooser, one-click focus from tile badge, compact headers, page loading progress, safe manual reload confirmation, live 1–20 pane retention and cleanup on Activity destroy.
 - GridSizing pure-Java test added to CI with 393dp/5-pane and various tablet/phone/memory/layout cases.
-- [PENDING] v0.2.0 Actions compile and release verification; then owner visual/UX test on Android 15.
+- [PASS] v0.2.0 CI Actions run 42501281095 success (compile, GridSizing test, source audit, release). Device visual/UX still pending.
 - [PENDING] Long ChatGPT thread/keyboard/landscape/renderer-restart performance measurements on phone.
 
 ## 2026-11-08 — v0.2.1 additional fixes
@@ -37,4 +37,4 @@ Do not convert PENDING into PASS without run/device evidence.
 ## 2026-11-08 — v0.2.2 URL/toolbar refinements
 - [IMPLEMENTED, runtime unverified] Multi-link distributor splits on newlines; preserves pane selection and avoids per-pane layout reflow.
 - [IMPLEMENTED, runtime unverified] Per-pane duplicate, external browser hand-off, zoom in/out.
-- [PENDING] New build and updated release.
+- [PASS] v0.2.2 Actions https://github.com/alwansan/MultiView-Browser/actions/runs/42501943269 SUCCESS. Commit cb3a6997550aa600f15440c5bc83930246c38a47, Artifact 13625991380, APK 34341 bytes, SHA256 878d14ba0d101aadfab70e9949c248db95d0b2348865acc4d3134cc57cbafe87. Live on-device test pending.
