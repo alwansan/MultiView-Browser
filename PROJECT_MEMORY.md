@@ -153,3 +153,11 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Android debug keys differ per CI runner, causing uninstall/reinstall and loss of session metadata. CI now supports optional MULTIVIEW_KEYSTORE_B64, MULTIVIEW_STORE_PASS, MULTIVIEW_KEY_PASS, MULTIVIEW_KEY_ALIAS GitHub Actions secrets, signs via official apksigner (never logs passwords or key, never commits keystore).
 - With all secrets absent, normal debug APK works; with partially configured secrets workflow fails instead of accidentally publishing mismatched APK. Docs docs/SIGNING_SETUP_AR.md include Termux gh-secret instructions.
 - Owner must perform secret setup; GitHub connector does not expose writing repository secrets. Never claim stable signature is enabled until verified.
+
+## Final verified v0.4.0 preview delivery — 2026-11-08
+- Run https://github.com/alwansan/MultiView-Browser/actions/runs/42506003292 SUCCESS, source commit 28d0d322c1b173b951e0864c59641a221e110ab8.
+- Artifact ID 13627228232, rolling Release asset ID 724693964, size 68,436 bytes.
+- Direct APK https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk; SHA256 6788d8aec8e91a23ceee72a44fbd0d541f2cdb3e48150ff252170b74f011ef24.
+- Included: FGS optional session guard + notification stop, minimize Back, critical WebView recovery, bounded nav-history and scroll metadata, lazy cold-start restore, main Links shortcut with bookmarks/history and saved sets, configChanges for locale/screen, POCO battery settings helper, optional secure stable-signing workflow.
+- Stable signing not configured: CI output explicitly reports fallback ephemeral debug signature. See docs/SIGNING_SETUP_AR.md; owner secret setup remains necessary if stable updates are desired.
+- No hardware validation yet for v0.4.0. Android no-root cannot promise zero reloads or never being killed. Focus on per-device 5/10/20 tab and screen-off tests.

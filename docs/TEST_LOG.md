@@ -75,3 +75,11 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED / CI PENDING] Battery settings shortcut opens native Android app details; notification permission request when user enables session guard.
 
 - [IMPLEMENTED, CI PENDING] Optional owner-secret stable signing pathway; absent secrets should preserve normal successful debug-build behavior. Actual stable signer is NOT configured yet.
+
+## 2026-11-08 — v0.4.0 final CI verification
+- [PASS] Workflow https://github.com/alwansan/MultiView-Browser/actions/runs/42506003292, commit 28d0d322c1b173b951e0864c59641a221e110ab8 — conclusion SUCCESS.
+- [PASS] Gradle Java compile and Android resource link, grid/appearance/session restore JVM unit checks, source audit, APK artifact upload, release publishing.
+- [PASS] Artifact 13627228232; GitHub Release asset 724693964; APK size 68,436 bytes; SHA256 6788d8aec8e91a23ceee72a44fbd0d541f2cdb3e48150ff252170b74f011ef24.
+- [PASS] No signing secrets supplied: fallback debug signing step successfully skipped stable signer.
+- [PENDING] Real POCO Android 15: FGS specialUse start/stop notification; Home then 10/30-minute absence; WebView renderer process recovery; 20-tab cold start; Links picker, saved sets, Arabic/English relayout.
+- [LIMIT] No process or foreground service can guarantee indefinite continuous WebView execution, and WebView.saveState doesn't save DOM/unsent messages.

@@ -62,3 +62,15 @@ Includes: 10–200% adjustable page content zoom in 10% steps, per-pane/apply-al
 ## Preserve data across APK updates
 
 Each ephemeral CI debug certificate may differ, requiring an uninstall. For optional consistent APK signatures and retained app data across future updates, see [Arabic stable-signing setup](docs/SIGNING_SETUP_AR.md). The owner's private keystore **must not be committed**.
+
+## v0.4.0 — keep sessions resilient
+
+[Download v0.4.0 preview APK](https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk)
+
+**Main upgrades:** opt-in foreground session notification (in More), minimize instead of Activity finish, bounded active WebView navigation-history restoration, deferred loading of offscreen tabs on cold restart, manual recovery when a renderer dies, and direct Links shortcut with saved link lists + bookmarks + history.
+
+**It is not possible to guarantee that Android will never kill a WebView or reload a page.** The current APK compiles in CI; run-time behavior on Android 15 should be tested on device.
+
+- [Arabic background reliability & link picker guide](docs/BACKGROUND_RELIABILITY_AR.md)
+- [Stable signing instructions](docs/SIGNING_SETUP_AR.md)
+- SHA256 of the current verified APK: `6788d8aec8e91a23ceee72a44fbd0d541f2cdb3e48150ff252170b74f011ef24`

@@ -23,3 +23,6 @@
 
 
 v0.4.0: جلسات الخلفية opt-in باستخدام SessionKeepAliveService، وعودة Back تصغّر التطبيق، واستعادة نشطة محدودة وسكرول، وخوارزمية SessionRestorePlan لتجنب إعادة تحميل 20 صفحة دفعة واحدة. روابط متعددة من زر Links الرئيسي مع السجل والمفضلة والقوائم المحفوظة. وثق نتائج CI والرابط الحقيقي بعد البناء ولا تدّعي ضمان بقاء صفحات JS للأبد.
+
+
+v0.4.0 النهائي الحالي: Actions 42506003292 نجح، SHA 6788d8aec8e91a23ceee72a44fbd0d541f2cdb3e48150ff252170b74f011ef24، APK https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk. اقرأ docs/BACKGROUND_RELIABILITY_AR.md وdocs/SIGNING_SETUP_AR.md. عدم إعادة التحميل أبداً مستحيل على Android بدون ضمانات النظام؛ تحقق على الجهاز، وحافظ على سلوك Back minimization وWebView.renderer recovery ولا تعد بإبقاء DOM بعد قتل العملية.

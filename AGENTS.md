@@ -16,3 +16,7 @@ Scope: this repository only. Follow `PROJECT_MEMORY.md` and `docs/PLAN_AR.md` be
 ## Gate
 
 A commit passing source checks is not a verified Android binary. An Actions green build is not a verified login, page retention, input, scroll, or multitasking result. Those need on-device checks.
+
+11. When backgrounding, never call Activity.finish() or WebView.pauseTimers() merely to leave the app; Back minimizes. Retain the original WebViews while process exists. Renderer deaths require destroying the dead view, never automatic 20-tab reloads.
+12. Opt-in foreground service specialUse with visible notification must remain user controlled, not forced on startup for unconsenting users. No "never reload" guarantees. Android and OEM memory managers remain authoritative.
+13. Keep browser signing private; secrets and private keystore must not be committed. CI may use optional signing secrets. Do not claim stable signing is configured until verified.
