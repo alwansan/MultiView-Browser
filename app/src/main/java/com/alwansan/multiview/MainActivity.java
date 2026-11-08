@@ -62,7 +62,7 @@ public final class MainActivity extends Activity {
     private LinearLayout topBar;
     private LinearLayout bottomBar;
     private TextView title;
-    private WebChromeClient.ValueCallback<Uri[]> fileCallback;
+    private android.webkit.ValueCallback<Uri[]> fileCallback;
     private int layoutMode = 0; // 0 grid, 1 vertical, 2 horizontal, 3 focus
     private int active = 0;
     private boolean dark = true;
@@ -144,6 +144,7 @@ public final class MainActivity extends Activity {
         title.setTextSize(19);
         title.setTextColor(ink());
         title.setSingleLine(true);
+        title.setOnClickListener(v -> selectFocusedPane());
         topBar.addView(title, new LinearLayout.LayoutParams(0,-1,1));
         Button minus=button("−", () -> { if(panes.size()>1) removePane(panes.size()-1); });
         topBar.addView(minus, new LinearLayout.LayoutParams(dp(40),-1));
@@ -170,6 +171,16 @@ public final class MainActivity extends Activity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, -1, weight);
         lp.setMargins(dp(3), 0, dp(3), 0);
         bottomBar.addView(b, lp);
+    }
+    private void selectFocusedPane() {
+        String[] options=new String[panes.size()];
+        for(int i=0;i<panes.size();i++) {
+            String url=panes.get(i).web.getUrl();
+            options[i]="View "+(i+1)+" — "+(url==null?"New tab":url);
+        }
+        new AlertDialog.Builder(this).setTitle("Switch active view")
+            .setItems(options,(dialog,which)->{active=which;renderLayout();saveSession();})
+            .show();
     }
     private void showMainMenu() {
         String[] actions = {"Keep screen awake: " + (keepAwake ? "ON" : "OFF"), "Clear browsing history", "About / limitations"};
@@ -334,7 +345,7 @@ public final class MainActivity extends Activity {
         if(value.isEmpty())return "about:blank";
         if(value.startsWith("about:")||value.startsWith("https://")||value.startsWith("http://"))return value;
         if(!value.contains(" ") && value.contains("."))return "https://"+value;
-        return "https://www.google.com/search?q="+URLEncoder.encode(value, StandardCharsets.UTF_8);
+        return "https://www.google.com/search?q="+Uri.encode(value);
     }
     private void restoreSession() {
         try {
@@ -378,7 +389,7 @@ public final class MainActivity extends Activity {
             fileCallback=null;
         }
     }
-    private void chooseFile(WebChromeClient.ValueCallback<Uri[]> callback,WebChromeClient.FileChooserParams params) {
+    private void chooseFile(android.webkit.ValueCallback<Uri[]> callback,WebChromeClient.FileChooserParams params) {
         if(fileCallback!=null)fileCallback.onReceiveValue(null);
         fileCallback=callback;
         try { startActivityForResult(params.createIntent(),FILE_REQUEST); }
@@ -502,7 +513,7 @@ public final class MainActivity extends Activity {
                 }
             });
             web.setWebChromeClient(new WebChromeClient(){
-                @Override public boolean onShowFileChooser(WebView view,ValueCallback<Uri[]> callback,FileChooserParams params) {
+                @Override public boolean onShowFileChooser(WebView view,android.webkit.ValueCallback<Uri[]> callback,FileChooserParams params) {
                     chooseFile(callback,params);return true;
                 }
             });
