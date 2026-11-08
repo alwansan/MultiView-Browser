@@ -182,3 +182,15 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Additional repository organization: CHANGELOG.md, CONTRIBUTING.md, SECURITY.md, docs/README.md, docs/BRAND_DESIGN_AR.md. GitHub README bilingual language nav tested through linked paths; no automatic locale detection or dynamic rendering.
 - Generated design concepts exist in conversation, while repository publishes independent lightweight vector SVG equivalents. Do not misrepresent AI concept art as real app screenshots.
 - Owner feedback: earlier v0.4.0 and prior builds were tried; v0.4.2 remains UNVERIFIED on device. Next step: test launcher adaptive icon, Arabic and English landing/docs links, cleanup UI and session stability on POCO Android 15.
+
+## 2026-11-08: versioned v0.4.2-preview release published
+- User requested fresh latest build in https://github.com/alwansan/MultiView-Browser/releases.
+- Source commit used for build: `1bfb6626bda78a9bba29b250dd84719f979e8b38`; workflow run `42508203684` completed SUCCESS.
+- All unit tests, Android assemble, artifact, versioned release and rolling release upload succeeded.
+- Versioned release: https://github.com/alwansan/MultiView-Browser/releases/tag/v0.4.2-preview
+- APK: https://github.com/alwansan/MultiView-Browser/releases/download/v0.4.2-preview/app-debug.apk
+- SHA256SUMS: https://github.com/alwansan/MultiView-Browser/releases/download/v0.4.2-preview/SHA256SUMS.txt
+- Binary SHA256: a0ccb6393e265e0ac03fc50f6ff2977d669087f41b3c5b172a076e4fa63e8581, size 78469 bytes.
+- Artifact ID 13628252411 (multiview-debug-apk).
+- Verified signing log says "Stable signing not configured", so this is an ephemeral debug-signed build. Owner may need to uninstall previous build (after backing up saved links) if signature mismatch. Stable key setup remains pending.
+- Runtime on user's actual phone for this exact binary is not yet confirmed.

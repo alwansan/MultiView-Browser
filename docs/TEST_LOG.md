@@ -100,3 +100,10 @@ Do not convert PENDING into PASS without run/device evidence.
 - [PASS] Artifact 13628411049, rolling GitHub Release asset 724750520, APK 78,469 bytes, SHA256 f7d9485eb99b8d9985e28decd6f20ffd9d658b03a0c6438219a3cf4322b114b0.
 - [PENDING] Real Android 15 verification of visual UI/icon, toggle language, 5-tab layout, cleanup actions, memory retention after 10/30-minute background absence.
 - [KNOWN LIMIT] Mockup SVGs are concept art; actual app may differ. Optional SessionKeepAliveService is not an OS-level guarantee.
+
+## 2026-11-08: final v0.4.2-preview publish verification
+- [PASS] Workflow 42508203684 (source SHA 1bfb6626bda78a9bba29b250dd84719f979e8b38), conclusion SUCCESS.
+- [PASS] Versioned release https://github.com/alwansan/MultiView-Browser/releases/tag/v0.4.2-preview: app-debug.apk (78469 bytes), SHA256SUMS.txt.
+- [PASS] Rolling preview release also updated with APK and checksum.
+- [PASS] APK SHA256 a0ccb6393e265e0ac03fc50f6ff2977d669087f41b3c5b172a076e4fa63e8581.
+- [NOTE] Stable signing secrets were absent (debug certificate not guaranteed consistent). Device-runtime testing remains pending for this binary.
