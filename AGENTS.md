@@ -20,3 +20,7 @@ A commit passing source checks is not a verified Android binary. An Actions gree
 11. When backgrounding, never call Activity.finish() or WebView.pauseTimers() merely to leave the app; Back minimizes. Retain the original WebViews while process exists. Renderer deaths require destroying the dead view, never automatic 20-tab reloads.
 12. Opt-in foreground service specialUse with visible notification must remain user controlled, not forced on startup for unconsenting users. No "never reload" guarantees. Android and OEM memory managers remain authoritative.
 13. Keep browser signing private; secrets and private keystore must not be committed. CI may use optional signing secrets. Do not claim stable signing is configured until verified.
+
+14. Keep README.md and README.ar.md both navigable using relative language links; preserve clearly labeled conceptual artwork and never substitute mockups for real screenshots.
+15. Keep Android adaptive icon/background/monochrome resources and app theme consistent with assets/brand. Run scripts/brand_audit.py and Actions assemble after visual asset changes.
+16. Privacy cleanup must remain user-initiated with confirmation; do not erase saved session data, web cookies or app storage implicitly.

@@ -29,3 +29,6 @@ v0.4.0 النهائي الحالي: Actions 42506003292 نجح، SHA 6788d8aec8e
 
 
 التحديث البصري: README إنجليزي + README.ar.md عربي، وأيقونات SVG وأيقونة Adaptive Android، تحسين تمييز الصفحة النشطة. الإصدار v0.4.2 يضيف Privacy & cleanup اختياري دون تنظيف آلي. راجع أحدث Actions والـAPK قبل إعطاء أي تأكيد. الصور بالمستودع تصاميم توضيحية وليست screenshots فعلية.
+
+
+أحدث مرجع 2026-11-08: التطبيق 0.4.2-preview؛ آخر بناء ناجح 42507742254 من 6d75c27f8068b019e756ef6c925a3d59126073de، APK SHA256 f7d9485eb99b8d9985e28decd6f20ffd9d658b03a0c6438219a3cf4322b114b0. الروابط: README.md إنجليزي وREADME.ar.md عربي، صور SVG في assets/brand، أيقونة Android Adaptive، وPrivacy & cleanup لتفريغ cache/history/saved sets/blank pages/cookies بشكل اختياري. تم تجهيز CHANGELOG.md وdocs/README.md وCONTRIBUTING.md وSECURITY.md. لا تدعِ التحقق على الجهاز من هذه النسخة قبل اختبار المالك.

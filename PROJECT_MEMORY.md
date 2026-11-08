@@ -174,3 +174,11 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - User asked for "التنظيف" and polish. Added privacy/cleanup menu with five independently confirmed operations: app-wide WebView resource cache; visit + navigation history; saved URL batches; genuinely blank tabs only; cookies only. No operation silently clears session/active pages.
 - Clearing cache does not equal clearing all Chromium storage; localStorage/IndexedDB may remain, as documented by Android/OWASP. Cookies action signs out and has warning; cleanup is never scheduled/automatic.
 - Bumped versionCode 10, versionName 0.4.2-preview. Build and on-device validation pending. Styled app icon/header and bilingual repo from 0.4.1 retained.
+
+## 2026-11-08 final publishing checkpoint (v0.4.2)
+- Original main commit 6d75c27f8068b019e756ef6c925a3d59126073de compiled successfully in https://github.com/alwansan/MultiView-Browser/actions/runs/42507742254. All grid/zoom/cold-restore JVM tests and source SVG/brand/translation guards passed, Android assembleDebug succeeded, and APK artifact/release publish succeeded.
+- Preview release asset 724750520, name app-debug.apk, size 78,469 bytes, SHA256 f7d9485eb99b8d9985e28decd6f20ffd9d658b03a0c6438219a3cf4322b114b0.
+- Download: https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk. Artifact 13628411049, name multiview-debug-apk. Debug signing is still ephemeral unless owner has added all GitHub Secrets; no stable key is known configured.
+- Additional repository organization: CHANGELOG.md, CONTRIBUTING.md, SECURITY.md, docs/README.md, docs/BRAND_DESIGN_AR.md. GitHub README bilingual language nav tested through linked paths; no automatic locale detection or dynamic rendering.
+- Generated design concepts exist in conversation, while repository publishes independent lightweight vector SVG equivalents. Do not misrepresent AI concept art as real app screenshots.
+- Owner feedback: earlier v0.4.0 and prior builds were tried; v0.4.2 remains UNVERIFIED on device. Next step: test launcher adaptive icon, Arabic and English landing/docs links, cleanup UI and session stability on POCO Android 15.

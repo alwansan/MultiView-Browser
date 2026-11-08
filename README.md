@@ -54,6 +54,7 @@ CI builds and publishes the preview APK from `main` via [Android workflow](.gith
 
 | Topic | Documentation |
 |---|---|
+| Documentation index | [All project docs](docs/README.md) · [Changelog](CHANGELOG.md) |
 | Project roadmap | [Plan (Arabic)](docs/PLAN_AR.md) |
 | Testing | [Device checklist](docs/DEVICE_TEST_AR.md) · [Test log](docs/TEST_LOG.md) |
 | Background stability | [Background reliability (Arabic)](docs/BACKGROUND_RELIABILITY_AR.md) |

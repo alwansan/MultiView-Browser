@@ -93,3 +93,10 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED, CI PENDING] Cleanup menu with separate confirmation for resource cache, visit/back history, saved URL groups, blank panes and cookies.
 - [IMPLEMENTED, CI PENDING] Arabic/English cleanup strings; normal panes remain active and a truly blank-only predicate prevents removing deferred saved websites.
 - [PENDING] Android device validation: clear cache without refresh; delete saved groups; preserve saved sessions and browser logins unless cookies specifically selected.
+
+## 2026-11-08 — v0.4.2 final CI result and publishing
+- [PASS] Actions https://github.com/alwansan/MultiView-Browser/actions/runs/42507742254, source SHA 6d75c27f8068b019e756ef6c925a3d59126073de, conclusion SUCCESS.
+- [PASS] Android resource compilation including adaptive icon/themed icon; Java compilation; automatic resource, SVG brand and bilingual README validation; adaptive grid, zoom and cold-start JVM checks.
+- [PASS] Artifact 13628411049, rolling GitHub Release asset 724750520, APK 78,469 bytes, SHA256 f7d9485eb99b8d9985e28decd6f20ffd9d658b03a0c6438219a3cf4322b114b0.
+- [PENDING] Real Android 15 verification of visual UI/icon, toggle language, 5-tab layout, cleanup actions, memory retention after 10/30-minute background absence.
+- [KNOWN LIMIT] Mockup SVGs are concept art; actual app may differ. Optional SessionKeepAliveService is not an OS-level guarantee.

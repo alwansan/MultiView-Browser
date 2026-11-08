@@ -43,6 +43,7 @@ gradle --no-daemon :app:assembleDebug
 <div dir="rtl">
 <h2>ملفات المشروع</h2>
 <ul>
+<li><a href="docs/README.md">فهرس التوثيق</a> و<a href="CHANGELOG.md">سجل التغييرات</a>.</li>
 <li><a href="docs/PLAN_AR.md">خطة التطوير</a> و<a href="docs/TEST_LOG.md">سجل الاختبارات</a>.</li>
 <li><a href="docs/DEVICE_TEST_AR.md">اختبارات الهاتف</a> و<a href="docs/BACKGROUND_RELIABILITY_AR.md">دليل حماية الجلسات</a>.</li>
 <li><a href="docs/SIGNING_SETUP_AR.md">إعداد توقيع ثابت لتحديث APK</a>.</li>
