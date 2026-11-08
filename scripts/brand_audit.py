@@ -15,7 +15,7 @@ for path in svgs:
     assert not any(x in target.read_text().lower() for x in ('<script','javascript:')), path
 for readme in ("README.md","README.ar.md"):
     content=(root/readme).read_text(encoding="utf-8")
-    assert "(README.md)" in content and "(README.ar.md)" in content, readme
+    assert 'href="README.md"' in content and 'href="README.ar.md"' in content, readme
     for path in svgs:
         name=path.rsplit('/',1)[-1]
         if name.startswith("icon") or name.startswith("features") or name.startswith("layouts"):
