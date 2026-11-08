@@ -38,3 +38,12 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED, runtime unverified] Multi-link distributor splits on newlines; preserves pane selection and avoids per-pane layout reflow.
 - [IMPLEMENTED, runtime unverified] Per-pane duplicate, external browser hand-off, zoom in/out.
 - [PASS] v0.2.2 Actions https://github.com/alwansan/MultiView-Browser/actions/runs/42501943269 SUCCESS. Commit cb3a6997550aa600f15440c5bc83930246c38a47, Artifact 13625991380, APK 34341 bytes, SHA256 878d14ba0d101aadfab70e9949c248db95d0b2348865acc4d3134cc57cbafe87. Live on-device test pending.
+
+## 2026-11-08 — v0.3.0 request / implementation
+- [PASS owner report] v0.2.2 works on the Android phone; no crash/other issue observed by owner.
+- [IMPLEMENTED, CI awaiting verification] Zoom 10%-200%, 10% choices, per pane, save default + apply to all, persistence after navigations.
+- [IMPLEMENTED, CI awaiting verification] Dedicated Reload All toolbar control with unsent-data warning.
+- [IMPLEMENTED, CI awaiting verification] Arabic/English resources + language selection; Android 13+ per-app language setting, older fallback restart.
+- [IMPLEMENTED, CI awaiting verification] Experimental opt-in dark websites per pane + globally; saved/restore on next launch, can toggle off.
+- [IMPLEMENTED, CI awaiting verification] Copy all page URLs to clipboard.
+- [PENDING] Device UI, Chrome/ChatGPT CSS zoom behavior and dark-site accuracy, language-switch persistence and multi-pane reload safety.

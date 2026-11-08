@@ -94,3 +94,13 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - SHA256: 878d14ba0d101aadfab70e9949c248db95d0b2348865acc4d3134cc57cbafe87
 - Owner already confirmed v0.1.1 fixed startup crash. New 0.2.2 layout, ChatGPT, popup, screenshot, long-chat performance have NOT been physically tested yet.
 - Next iteration: owner-side screenshots on Android 15, 5-pane Fit Grid and Focus, orientation/keyboard, popup and sign-in tests, identify on-device defects; continue UI polish, memory measurements, stable signing via secure GitHub Secrets when feasible.
+
+## v0.3.0 design / implementation 2026-11-08
+- User reports v0.2.2 tested on Android and no crashes/problems observed.
+- Requested: zoom 10..200%, steps 10%; per-pane vs apply all/save as default; explicit reload-all button; Arabic/English user interface; optional dark website content. Extras: copy all addresses.
+- CSS zoom via JavaScript evaluated in WebView, not native WebView textZoom; after navigation onPageFinished and when user selects. Website CSS can override or behave differently; physical checks needed.
+- Opt-in dark website mode uses injected invert/hue-rotate CSS, compensates img/video/canvas/picture. It is **experimental**, especially websites with own dark theme, embedded frames or canvas, and should not be described as perfect dark rendering. Can be applied per pane or all; persisted in JSON.
+- Arabic and English string resources, Android 13+ LocaleManager per-app language and locale_config. Android <=12 uses saved locale context recreation. Switching language may destroy WebViews/reload unsent forms; user confirmation required.
+- Reload all is a persistent toolbar action requiring explicit confirmation. Never automatically reload ongoing conversations.
+- User confirmation v0.2.2 runtime good does not constitute v0.3 runtime verification.
+- Source docs: https://developer.android.com/guide/topics/resources/app-languages ; https://developer.android.com/reference/android/webkit/WebSettings#setAlgorithmicDarkeningAllowed(boolean)

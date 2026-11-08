@@ -41,3 +41,19 @@ assert 'value.split("\\\\r?\\\\n")' in source, 'expected line-oriented URL distr
 assert 'Duplicate view' in source and 'Open in another browser' in source
 assert 'web.zoomIn()' in source and 'web.zoomOut()' in source
 print('Multi-URL distribution and pane utility checks passed.')
+
+# Localization and content-appearance regression gates.
+assert 'showZoomDialog' in source and 'confirmReloadAll' in source
+assert 'zoomPercents' in source and 'defaultZoom' in source
+assert 'siteDarks' in source and 'websiteDark' in source
+assert 'onPageFinished' in source and 'applyAppearance();' in source
+assert 'setApplicationLocales' in source and 'attachBaseContext' in source
+assert 'header.removeAllViews()' not in source
+from xml.etree import ElementTree as ET
+en=ET.parse(root/'app/src/main/res/values/strings.xml').getroot()
+ar=ET.parse(root/'app/src/main/res/values-ar/strings.xml').getroot()
+en_names={x.attrib.get('name') for x in en}
+ar_names={x.attrib.get('name') for x in ar}
+assert en_names==ar_names and len(en_names)>=60
+assert (root/'app/src/main/res/xml/locale_config.xml').exists()
+print('Localization, zoom and appearance checks passed.')

@@ -39,6 +39,11 @@ jobs:
           mkdir -p build/grid-test-classes
           javac -d build/grid-test-classes app/src/main/java/com/alwansan/multiview/GridSizing.java scripts/GridSizingTest.java
           java -cp build/grid-test-classes com.alwansan.multiview.GridSizingTest
+      - name: Test zoom and web appearance rules
+        run: |
+          mkdir -p build/appearance-test-classes
+          javac -d build/appearance-test-classes app/src/main/java/com/alwansan/multiview/WebAppearance.java scripts/WebAppearanceTest.java
+          java -cp build/appearance-test-classes com.alwansan.multiview.WebAppearanceTest
       - name: Source checks
         run: python3 scripts/source_audit.py
       - name: Assemble debug APK

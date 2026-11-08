@@ -7,6 +7,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Configuration;
+import java.util.Locale;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -70,9 +72,23 @@ public final class MainActivity extends Activity {
     private int active = 0;
     private boolean dark = true;
     private boolean fitGrid = true;
+    private int defaultZoom = 100;
+    private boolean defaultSiteDark = false;
     private boolean keepAwake = false;
     private boolean booting = true;
-    private final String[] modeLabels = {"Fit grid", "Vertical", "Horizontal", "Focus"};
+    private final int[] modeLabels = {R.string.fit_grid, R.string.vertical, R.string.horizontal, R.string.focus};
+    private String t(int id){return getString(id);}
+    @Override protected void attachBaseContext(Context base){
+        if(Build.VERSION.SDK_INT<33){
+            String code=base.getSharedPreferences("multiview_language",Context.MODE_PRIVATE).getString("locale","");
+            if(!code.isEmpty()){
+                Configuration config=new Configuration(base.getResources().getConfiguration());
+                config.setLocale(new Locale(code));
+                base=base.createConfigurationContext(config);
+            }
+        }
+        super.attachBaseContext(base);
+    }
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -162,8 +178,8 @@ public final class MainActivity extends Activity {
         name.setSingleLine(true);
         brand.addView(name, new LinearLayout.LayoutParams(-1,dp(25)));
         TextView detail = new TextView(this);
-        detail.setText(panes.size()+" LIVE VIEWS  ·  "+
-            (layoutMode==0 ? (fitGrid?"FIT GRID":"SCROLL GRID") : modeLabels[layoutMode].toUpperCase()));
+        detail.setText(panes.size()+" "+t(R.string.live_views)+"  ·  "+
+            (layoutMode==0 ? (fitGrid?t(R.string.fit_grid):t(R.string.scroll_grid)) : t(modeLabels[layoutMode])));
         detail.setTextSize(10);
         detail.setLetterSpacing(0.07f);
         detail.setTextColor(muted());
@@ -191,11 +207,12 @@ public final class MainActivity extends Activity {
         bottomBar.removeAllViews();
         bottomBar.setPadding(dp(5),dp(6),dp(5),dp(6));
         bottomBar.setGravity(Gravity.CENTER_VERTICAL);
-        navButton("◫  Layout",this::showLayouts,1.2f);
-        navButton("▤  Views",this::selectFocusedPane,1.2f);
-        navButton("⇄  Links",this::showUrlDistribution,1.1f);
-        navButton("★  Saved",this::showSavedMenu,1.1f);
-        navButton("⋮  More",this::showMainMenu,1.1f);
+        navButton("◫ "+t(R.string.layout),this::showLayouts,1.15f);
+        navButton("± "+t(R.string.zoom),()->showZoomDialog(panes.get(active)),1.0f);
+        navButton("↻ "+t(R.string.all),this::confirmReloadAll,0.9f);
+        navButton("▤ "+t(R.string.views),this::selectFocusedPane,1.05f);
+        navButton("★ "+t(R.string.saved),this::showSavedMenu,1.0f);
+        navButton("⋮ "+t(R.string.more),this::showMainMenu,1.0f);
     }
     private void navButton(String label,Runnable run,float weight) {
         Button b=button(label,run);
@@ -205,23 +222,20 @@ public final class MainActivity extends Activity {
         bottomBar.addView(b,lp);
     }
     private void showLayouts() {
-        new AlertDialog.Builder(this).setTitle("Layout · keep pages alive")
+        new AlertDialog.Builder(this).setTitle(t(R.string.layout_title))
             .setSingleChoiceItems(new String[]{
-                "◫ Fit grid · up to 6 visible",
-                "▦ Scroll grid · larger pages",
-                "↕ Vertical stack",
-                "↔ Horizontal strip",
-                "▣ Single focus"
+                t(R.string.layout_fit),t(R.string.layout_scroll),t(R.string.layout_vertical),
+                t(R.string.layout_horizontal),t(R.string.layout_focus)
             }, layoutMode==0?(fitGrid?0:1):layoutMode+1,
             (d,choice)->{
                 if(choice<2){layoutMode=0;fitGrid=choice==0;}
                 else layoutMode=choice-1;
                 renderLayout();rebuildChrome();saveSession();d.dismiss();
-            }).setNegativeButton("Close",null).show();
+            }).setNegativeButton(t(R.string.close),null).show();
     }
     private void showSavedMenu() {
-        new AlertDialog.Builder(this).setTitle("Library")
-            .setItems(new String[]{"★ Bookmarks","◷ History"},(d,which)->{
+        new AlertDialog.Builder(this).setTitle(t(R.string.library))
+            .setItems(new String[]{t(R.string.bookmarks),t(R.string.history)},(d,which)->{
                 if(which==0)showBookmarks();else showHistory();
             }).show();
     }
@@ -231,53 +245,131 @@ public final class MainActivity extends Activity {
             String url=panes.get(i).web.getUrl();
             String label=panes.get(i).pageTitle;
             if(label==null || label.isEmpty() || "about:blank".equals(label)) label=url;
-            options[i]="View "+(i+1)+" — "+(label==null?"New view":label);
+            options[i]=t(R.string.view)+" "+(i+1)+" — "+(label==null?t(R.string.new_view):label);
         }
-        new AlertDialog.Builder(this).setTitle("Switch active view")
+        new AlertDialog.Builder(this).setTitle(t(R.string.switch_view))
             .setItems(options,(dialog,which)->{active=which;renderLayout();saveSession();})
             .show();
     }
-    private void showMainMenu() {
+    private void confirmReloadAll(){
+        new AlertDialog.Builder(this).setTitle(t(R.string.reload_all_title))
+            .setMessage(t(R.string.reload_warning))
+            .setPositiveButton(t(R.string.reload),(d,w)->{
+                for(Pane p:panes)p.web.reload();
+                toast(t(R.string.reloading_all));
+            })
+            .setNegativeButton(t(R.string.cancel),null).show();
+    }
+    private void showZoomDialog(Pane pane){
+        String[] levels=new String[20];
+        for(int i=0;i<20;i++)levels[i]=((i+1)*10)+"%";
+        final int[] chosen={Math.max(0,Math.min(19,pane.zoomPct/10-1))};
+        new AlertDialog.Builder(this)
+            .setTitle(t(R.string.zoom_title)+" · "+pane.zoomPct+"%")
+            .setSingleChoiceItems(levels,chosen[0],(d,index)->chosen[0]=index)
+            .setPositiveButton(t(R.string.apply_all_save),(d,w)->{
+                int value=(chosen[0]+1)*10;
+                defaultZoom=value;
+                for(Pane p:panes){p.zoomPct=value;p.applyAppearance();}
+                saveSession();toast(value+"% · "+t(R.string.applied_all));
+            })
+            .setNeutralButton(t(R.string.this_view),(d,w)->{
+                pane.zoomPct=(chosen[0]+1)*10;
+                pane.applyAppearance();saveSession();
+            })
+            .setNegativeButton(t(R.string.cancel),null).show();
+    }
+    private void setAllSitesDark(boolean enabled){
+        defaultSiteDark=enabled;
+        for(Pane p:panes){p.websiteDark=enabled;p.applyAppearance();}
+        saveSession();
+        toast(enabled?t(R.string.site_dark_on):t(R.string.site_dark_off));
+    }
+    private void showLanguagePicker(){
+        new AlertDialog.Builder(this).setTitle(t(R.string.language))
+            .setItems(new String[]{t(R.string.system_language),"العربية","English"},
+                (dialog,which)->{
+                    String code=which==1?"ar":which==2?"en":"";
+                    new AlertDialog.Builder(this).setTitle(t(R.string.language))
+                        .setMessage(t(R.string.language_restart_warning))
+                        .setPositiveButton(t(R.string.apply),(d,w)->{
+                            saveSession();
+                            if(Build.VERSION.SDK_INT>=33){
+                                android.app.LocaleManager manager=
+                                    (android.app.LocaleManager)getSystemService(Context.LOCALE_SERVICE);
+                                if(manager!=null)manager.setApplicationLocales(
+                                    android.os.LocaleList.forLanguageTags(code));
+                            }else{
+                                getSharedPreferences("multiview_language",Context.MODE_PRIVATE)
+                                    .edit().putString("locale",code).apply();
+                                recreate();
+                            }
+                        })
+                        .setNegativeButton(t(R.string.cancel),null).show();
+                }).show();
+    }
+    private void copyAllUrls(){
+        StringBuilder urls=new StringBuilder();
+        for(Pane pane:panes){
+            String url=pane.web.getUrl();
+            if(url!=null && url.startsWith("http")){
+                if(urls.length()>0)urls.append('\n');
+                urls.append(url);
+            }
+        }
+        if(urls.length()==0){toast(t(R.string.no_urls));return;}
+        ((ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(
+            ClipData.newPlainText("MultiView URLs",urls.toString()));
+        toast(t(R.string.copied_urls));
+    }
+    private void showMainMenu(){
         String[] actions={
-            "Appearance · "+(dark?"switch to light":"switch to dark"),
-            "Keep screen awake · "+(keepAwake?"ON":"OFF"),
-            "Open ChatGPT in active view",
-            "Reload all views (manual)",
-            "Clear history",
-            "Clear cookies and cache",
-            "About MultiView"
+            t(R.string.appearance)+" · "+(dark?t(R.string.light):t(R.string.dark)),
+            t(R.string.keep_awake)+" · "+(keepAwake?t(R.string.on):t(R.string.off)),
+            t(R.string.open_chatgpt),
+            t(R.string.open_links),
+            t(R.string.site_dark_all)+" · "+(defaultSiteDark?t(R.string.on):t(R.string.off)),
+            t(R.string.language),
+            t(R.string.copy_urls),
+            t(R.string.clear_history),
+            t(R.string.clear_cookies),
+            t(R.string.about)
         };
-        new AlertDialog.Builder(this).setTitle("Settings & tools")
+        new AlertDialog.Builder(this).setTitle(t(R.string.settings))
             .setItems(actions,(dialog,which)->{
-                switch(which) {
+                switch(which){
                     case 0:
                         dark=!dark;rebuildChrome();renderLayout();saveSession();break;
                     case 1:
-                        keepAwake=!keepAwake;applyAwake();saveSession();toast(keepAwake?"Keep awake enabled":"Normal screen timeout");break;
+                        keepAwake=!keepAwake;applyAwake();saveSession();break;
                     case 2:
                         panes.get(active).navigate("https://chatgpt.com/");break;
                     case 3:
-                        new AlertDialog.Builder(this).setTitle("Reload every page?")
-                            .setMessage("This refreshes all pages, including long conversations. Your unsent text may be lost.")
-                            .setPositiveButton("Reload",(d,w)->{for(Pane p:panes)p.web.reload();})
-                            .setNegativeButton("Cancel",null).show();break;
+                        showUrlDistribution();break;
                     case 4:
-                        new AlertDialog.Builder(this).setTitle("Clear history?")
-                            .setPositiveButton("Clear",(d,w)->getPreferences(0).edit().remove("history").apply())
-                            .setNegativeButton("Cancel",null).show();break;
+                        setAllSitesDark(!defaultSiteDark);break;
                     case 5:
-                        new AlertDialog.Builder(this).setTitle("Clear browsing data")
-                            .setMessage("All normal views share cookies. This action signs you out of every website.")
-                            .setPositiveButton("Clear",(d,w)->{
-                                CookieManager.getInstance().removeAllCookies(ok->CookieManager.getInstance().flush());
+                        showLanguagePicker();break;
+                    case 6:
+                        copyAllUrls();break;
+                    case 7:
+                        new AlertDialog.Builder(this).setTitle(t(R.string.clear_history))
+                            .setPositiveButton(t(R.string.clear),
+                                (d,w)->getPreferences(0).edit().remove("history").apply())
+                            .setNegativeButton(t(R.string.cancel),null).show();break;
+                    case 8:
+                        new AlertDialog.Builder(this).setTitle(t(R.string.clear_cookies))
+                            .setMessage(t(R.string.clear_cookies_warning))
+                            .setPositiveButton(t(R.string.clear),(d,w)->{
+                                CookieManager.getInstance().removeAllCookies(ok->
+                                    CookieManager.getInstance().flush());
                                 for(Pane p:panes)p.web.clearCache(true);
                                 getPreferences(0).edit().remove("history").apply();
-                                toast("Data cleared");
-                            }).setNegativeButton("Cancel",null).show();break;
-                    case 6:
-                        new AlertDialog.Builder(this).setTitle("MultiView v0.2.0")
-                            .setMessage("Original Android multi-pane browser. 1–20 WebViews share the default cookie profile. Changing layout does not reload them, but Android can still reclaim the renderer when memory is low. No background reload is promised.")
-                            .setPositiveButton("OK",null).show();break;
+                            }).setNegativeButton(t(R.string.cancel),null).show();break;
+                    case 9:
+                        new AlertDialog.Builder(this).setTitle(t(R.string.about))
+                            .setMessage(t(R.string.about_text))
+                            .setPositiveButton(t(R.string.ok),null).show();break;
                 }
             }).show();
     }
@@ -289,7 +381,7 @@ public final class MainActivity extends Activity {
         EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setText(Integer.toString(panes.size()));
-        new AlertDialog.Builder(this).setTitle("Number of views (1–20)").setView(input)
+        new AlertDialog.Builder(this).setTitle(t(R.string.number_of_views)).setView(input)
             .setPositiveButton("Apply", (d,w) -> {
                 try {
                     int n=Integer.parseInt(input.getText().toString());
@@ -483,13 +575,21 @@ public final class MainActivity extends Activity {
             dark=state.optBoolean("dark",true);
             keepAwake=state.optBoolean("awake",false);
             fitGrid=state.optBoolean("fitGrid",true);
+            defaultZoom=WebAppearance.clampZoom(state.optInt("defaultZoom",100));
+            defaultSiteDark=state.optBoolean("defaultSiteDark",false);
             active=state.optInt("active",0);
             JSONArray urls=state.optJSONArray("urls");
             JSONArray flags=state.optJSONArray("desktopFlags");
+            JSONArray zooms=state.optJSONArray("zoomPercents");
+            JSONArray siteDarks=state.optJSONArray("siteDarks");
             if(urls!=null)for(int i=0;i<Math.min(urls.length(),MAX_PANES);i++){
                 String url=urls.optString(i,"about:blank");
                 addPane(url.startsWith("http")||url.equals("about:blank")?url:"about:blank",
                     flags!=null && flags.optBoolean(i,false));
+                Pane pane=panes.get(panes.size()-1);
+                pane.zoomPct=zooms!=null?WebAppearance.clampZoom(zooms.optInt(i,defaultZoom)):defaultZoom;
+                pane.websiteDark=siteDarks!=null?siteDarks.optBoolean(i,defaultSiteDark):defaultSiteDark;
+                pane.applyAppearance();
             }
         } catch(Exception ignored){}
     }
@@ -501,12 +601,22 @@ public final class MainActivity extends Activity {
             JSONObject state=new JSONObject();
             JSONArray urls=new JSONArray();
             JSONArray desktops=new JSONArray();
+            JSONArray zooms=new JSONArray();
+            JSONArray siteDarks=new JSONArray();
             for(Pane pane:panes) {
                 String url=pane.web.getUrl();
                 urls.put(url==null?pane.initialUrl:url);
                 desktops.put(pane.desktop);
+                zooms.put(pane.zoomPct);
+                siteDarks.put(pane.websiteDark);
             }
-            state.put("urls",urls);state.put("desktopFlags",desktops);state.put("layout",layoutMode);
+            state.put("urls",urls);
+            state.put("desktopFlags",desktops);
+            state.put("zoomPercents",zooms);
+            state.put("siteDarks",siteDarks);
+            state.put("defaultZoom",defaultZoom);
+            state.put("defaultSiteDark",defaultSiteDark);
+            state.put("layout",layoutMode);
             state.put("active",active);state.put("dark",dark);state.put("awake",keepAwake);
             state.put("fitGrid",fitGrid);
             getPreferences(0).edit().putString("session",state.toString()).apply();
@@ -604,6 +714,8 @@ public final class MainActivity extends Activity {
         String pageTitle="New view";
         boolean desktop=false;
         boolean headerBuilt=false;
+        int zoomPct=defaultZoom;
+        boolean websiteDark=defaultSiteDark;
         Pane(String url,boolean startDesktop,boolean autoLoad) {
             initialUrl=url;
             desktop=startDesktop;
@@ -661,6 +773,7 @@ public final class MainActivity extends Activity {
                 }
                 @Override public void onPageFinished(WebView view,String url) {
                     if(!address.hasFocus())address.setText(url);
+                    applyAppearance();
                     saveSession();
                 }
                 @Override public boolean onRenderProcessGone(WebView view, android.webkit.RenderProcessGoneDetail detail) {
@@ -676,7 +789,10 @@ public final class MainActivity extends Activity {
                         card.removeView(view);
                         view.destroy();
                         Pane replacement=new Pane(current,desktop,true);
+                        replacement.zoomPct=zoomPct;
+                        replacement.websiteDark=websiteDark;
                         panes.add(index,replacement);
+                        replacement.applyAppearance();
                         active=index;renderLayout();saveSession();
                     }
                     return true;
@@ -714,6 +830,12 @@ public final class MainActivity extends Activity {
             web.setDownloadListener((url,userAgent,contentDisposition,mimetype,contentLength)->
                 download(url,contentDisposition,mimetype,userAgent));
         }
+        void applyAppearance(){
+            if(web==null)return;
+            String current=web.getUrl();
+            if(current==null)return;
+            web.evaluateJavascript(WebAppearance.script(zoomPct,websiteDark),null);
+        }
         private Button iconButton(String label,Runnable click,LinearLayout into) {
             Button b=button(label,click);
             b.setTextSize(12);
@@ -742,7 +864,7 @@ public final class MainActivity extends Activity {
 
                 address.setSingleLine(true);
                 address.setTextSize(12);
-                address.setHint("URL or search");
+                address.setHint(t(R.string.url_or_search));
                 address.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_URI);
                 address.setImeOptions(EditorInfo.IME_ACTION_GO);
                 address.setSelectAllOnFocus(true);
@@ -769,6 +891,7 @@ public final class MainActivity extends Activity {
                 iconButton("›",()->{setActive(this);if(web.canGoForward())web.goForward();},tools);
                 iconButton("↻",()->{setActive(this);web.reload();},tools);
                 iconButton("⌂",()->{setActive(this);navigate(HOME);},tools);
+                iconButton("%",()->showZoomDialog(this),tools);
                 iconButton("▣",()->{setActive(this);layoutMode=3;renderLayout();rebuildChrome();saveSession();},tools);
                 loading=new ProgressBar(MainActivity.this,null,android.R.attr.progressBarStyleHorizontal);
                 loading.setMax(100);
@@ -807,62 +930,75 @@ public final class MainActivity extends Activity {
             }
         }
         void navigate(String text){web.loadUrl(normalize(text));setActive(this);saveSession();}
-        void paneMenu() {
+        void paneMenu(){
             setActive(this);
-            String[] actions={
-                "★ Bookmark page",
-                "Desktop mode: "+(desktop?"ON":"OFF"),
-                "Save screenshot",
-                "Copy page address",
-                "Share link",
-                "Duplicate view",
-                "Open in another browser",
-                "Zoom in",
-                "Zoom out",
-                "Move view left/up",
-                "Move view right/down",
-                "Close this view"
+            String[] options={
+                t(R.string.bookmark_page),
+                t(R.string.desktop_mode)+" · "+(desktop?t(R.string.on):t(R.string.off)),
+                t(R.string.site_dark_view)+" · "+(websiteDark?t(R.string.on):t(R.string.off)),
+                t(R.string.zoom)+" · "+zoomPct+"%",
+                t(R.string.screenshot),
+                t(R.string.copy_address),
+                t(R.string.share_link),
+                t(R.string.duplicate_view),
+                t(R.string.external_browser),
+                t(R.string.zoom_in),
+                t(R.string.zoom_out),
+                t(R.string.move_before),
+                t(R.string.move_after),
+                t(R.string.close_view)
             };
-            new AlertDialog.Builder(MainActivity.this).setTitle("View "+(panes.indexOf(this)+1))
-                .setItems(actions,(dialog,which)->{
+            new AlertDialog.Builder(MainActivity.this)
+                .setTitle(t(R.string.view)+" "+(panes.indexOf(this)+1))
+                .setItems(options,(dialog,which)->{
                     String url=web.getUrl();
                     switch(which){
                         case 0:bookmark(url);break;
                         case 1:
                             desktop=!desktop;
-                            WebSettings settings=web.getSettings();
-                            settings.setUserAgentString(desktop?DESKTOP_UA:
+                            web.getSettings().setUserAgentString(desktop?DESKTOP_UA:
                                 WebSettings.getDefaultUserAgent(MainActivity.this));
-                            settings.setUseWideViewPort(true);
                             web.reload();saveSession();break;
-                        case 2:screenshot(this);break;
+                        case 2:
+                            websiteDark=!websiteDark;applyAppearance();saveSession();break;
                         case 3:
+                            showZoomDialog(this);break;
+                        case 4:screenshot(this);break;
+                        case 5:
                             ((ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(
                                 ClipData.newPlainText("URL",url==null?"":url));
-                            toast("Copied");break;
-                        case 4:
-                            Intent send=new Intent(Intent.ACTION_SEND);
-                            send.setType("text/plain");
-                            send.putExtra(Intent.EXTRA_TEXT,url);
-                            startActivity(Intent.createChooser(send,"Share page"));break;
-                        case 5:
-                            if(panes.size()<MAX_PANES)addPane(url==null?"about:blank":url,desktop);
-                            else toast("Maximum 20 views");
-                            break;
+                            toast(t(R.string.copied));break;
                         case 6:
-                            if(url!=null && (url.startsWith("https://")||url.startsWith("http://"))) {
-                                try{
-                                    Intent intent=new Intent(Intent.ACTION_VIEW,Uri.parse(url));
-                                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                                    startActivity(intent);
-                                }catch(Exception ex){toast("No compatible browser installed");}
-                            }else toast("No website to open");
+                            Intent share=new Intent(Intent.ACTION_SEND);
+                            share.setType("text/plain");
+                            share.putExtra(Intent.EXTRA_TEXT,url);
+                            startActivity(Intent.createChooser(share,t(R.string.share_link)));break;
+                        case 7:
+                            if(panes.size()<MAX_PANES){
+                                addPane(url==null?"about:blank":url,desktop);
+                                Pane copy=panes.get(panes.size()-1);
+                                copy.zoomPct=zoomPct;copy.websiteDark=websiteDark;
+                                copy.applyAppearance();
+                            }else toast(t(R.string.max_views));
                             break;
-                        case 7:web.zoomIn();break;
-                        case 8:web.zoomOut();break;
-                        case 9:movePane(this,-1);break;
-                        case 10:movePane(this,1);break;
-                        case 11:removePane(panes.indexOf(this));break;
+                        case 8:
+                            if(url!=null&&(url.startsWith("https://")||url.startsWith("http://"))){
+                                try{
+                                    Intent external=new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+                                    external.addCategory(Intent.CATEGORY_BROWSABLE);
+                                    startActivity(external);
+                                }catch(Exception e){toast(t(R.string.no_browser));}
+                            }else toast(t(R.string.no_urls));
+                            break;
+                        case 9:
+                            zoomPct=WebAppearance.clampZoom(zoomPct+10);
+                            applyAppearance();saveSession();break;
+                        case 10:
+                            zoomPct=WebAppearance.clampZoom(zoomPct-10);
+                            applyAppearance();saveSession();break;
+                        case 11:movePane(this,-1);break;
+                        case 12:movePane(this,1);break;
+                        case 13:removePane(panes.indexOf(this));break;
                     }
                 }).show();
         }

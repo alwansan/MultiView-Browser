@@ -41,3 +41,12 @@ The original commercial APK and licensed assets are intentionally **not** stored
 See [Arabic device checklist](docs/DEVICE_TEST_AR.md). Start with five pages in Fit Grid and verify focus/navigation, real ChatGPT typing, file chooser and rotation. **No account credentials, auth cookies or personal chat text should be uploaded to GitHub.**
 
 Current verified preview: https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk — SHA256 `878d14ba0d101aadfab70e9949c248db95d0b2348865acc4d3134cc57cbafe87`.
+
+## Version 0.3.0 — page appearance and localization
+
+- Zoom each page from **10% to 200%**, in 10% steps; save the default and apply it to all pages.
+- Direct **Reload All** button with confirmation to protect unsent work.
+- Arabic and English strings, RTL app UI and language setting.
+- **Experimental** opt-in dark content per page or across all pages. Some sites will render imperfectly; turn it off for pages with native dark themes.
+- Copy all current page addresses at once.
+- Uses the existing WebViews when changing appearance; it does not intentionally reload for zoom or dark toggle.
