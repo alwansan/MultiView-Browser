@@ -19,5 +19,5 @@ Do not convert PENDING into PASS without run/device evidence.
   Call chain: `MainActivity$Pane.styleCard` → `renderLayout` → `addPane` → `onCreate`. Screenshot reported by owner.
 - Root cause: `styleCard()` called `header.removeAllViews()` but reused its nested `number` and `address` widgets, still attached to the previous detached `upper` group. This occurs on first pane add/reflow.
 - Fix: build header once via `headerBuilt`, keep original edit field and WebView; update colors/index without replacing header children. This additionally avoids discarding in-progress URL input during focus/layout change.
-- [PENDING] CI build and new APK release for v0.1.1-prototype.
+- [PASS] v0.1.1-prototype CI compile / source guards / publish: run 42499479881 (success), commit d9ae965775744a1502644331e7e0918ab40b2160. Artifact 13625070608. Release asset 724484870 (29,633 bytes) at https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk. SHA256 4e779bf623f566086a5c70b95cf38d1ed68c932ceec9631dcd9181478810e8a1.
 - [PENDING] Confirm launch + layout reflow on owner phone. Build success alone cannot prove runtime fix.

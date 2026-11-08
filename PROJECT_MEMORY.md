@@ -53,3 +53,11 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Replacement approach: create pane header once with `headerBuilt`, re-style without reparenting; pane card can move between layouts and WebView stays live. Regression script source_audit.py enforces.
 - Version bump to 0.1.1-prototype / versionCode 2. New build/release and on-device retest pending.
 - ACTION FOR OWNER: uninstall previous DEBUG APK before installing another Actions-built debug APK if signing certificates are incompatible; debug keystore is not stable across clean CI runners.
+
+## v0.1.1 verified CI and user retest procedure — 2026-11-08
+- Verified Actions SUCCESS: https://github.com/alwansan/MultiView-Browser/actions/runs/42499479881
+- Source commit d9ae965775744a1502644331e7e0918ab40b2160; artifact multiview-debug-apk id 13625070608.
+- Rolling release asset app-debug.apk id 724484870, size 29,633 bytes; direct URL https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk.
+- SHA256 4e779bf623f566086a5c70b95cf38d1ed68c932ceec9631dcd9181478810e8a1.
+- Passed Gradle assembleDebug, source_audit regression, artifact upload and release upload. **Runtime on owner device still pending**.
+- Owner next: uninstall older debug build only if signature mismatch / installation fails, then install preview APK; test app starts, 2->5 panes, Grid/Vertical/Horizontal/Focus cycling and URL typing. Report screenshot/log if another crash.
