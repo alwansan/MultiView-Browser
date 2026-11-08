@@ -50,3 +50,11 @@ Current verified preview: https://github.com/alwansan/MultiView-Browser/releases
 - **Experimental** opt-in dark content per page or across all pages. Some sites will render imperfectly; turn it off for pages with native dark themes.
 - Copy all current page addresses at once.
 - Uses the existing WebViews when changing appearance; it does not intentionally reload for zoom or dark toggle.
+
+## Direct Android download — v0.3.1 preview
+
+[Download the latest app-debug.apk](https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk)
+
+SHA256: `3f3d55ec7682b2074a6ed168e957e66bbad7d4c21df9fa734d0e3bdb982e496d`
+
+Includes: 10–200% adjustable page content zoom in 10% steps, per-pane/apply-all/save-default, dedicated Reload All, Arabic and English UI, experimental site darkening, in-page search, copy-all URLs. Zoom and dark injection are site-dependent; Android may still reclaim WebView rendering processes. GitHub Actions compilation was successful; phone verification is pending.

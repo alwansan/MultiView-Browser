@@ -110,3 +110,12 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Added WebView built-in per-pane findAllAsync, findNext, clearMatches, plus scroll-to-top control. This does not reload pages. Search within embedded content may vary per site.
 - Existing v0.3.0 build SUCCESS: 42503641714; v0.3.1 CI pending.
 - Official docs: https://developer.android.com/reference/android/webkit/WebView#findAllAsync(java.lang.String)
+
+## Verified v0.3.1 release — 2026-11-08
+- GitHub Actions run 42503968802: SUCCESS, checked Android Gradle compile, GridSizing and WebAppearance unit tests, source audit, release upload. Source commit 8f3c95ff24bc83cd28a4d9792b0e363957043baa.
+- Artifact multiview-debug-apk ID 13626239434. Rolling preview release asset app-debug.apk id 724629194, 54,568 bytes.
+- Verified APK SHA256 3f3d55ec7682b2074a6ed168e957e66bbad7d4c21df9fa734d0e3bdb982e496d.
+- Direct URL https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk
+- Feature scope: page content zoom 10–200% in 10% steps; all-pages + saved default, one-page controls; toolbar reload all with confirmation; Arabic/English app strings and in-app language picker; experimental CSS dark websites per-pane/all, saved; copy all URLs; native find in page, next, clear, scroll top. On-page visual behavior is NOT yet validated on owner device for this build.
+- Owner reports previous 0.2.2 APK runs without crashes or issues; v0.3.1 still requires manual device checks, particularly ChatGPT CSS zoom and dark mode, Arabic screenshots, language-switch form restoration.
+- Important: app debug signing key may differ between workflows; if update cannot install, manually save URL lists first and uninstall old debug. Existing session settings may be lost if app is uninstalled.

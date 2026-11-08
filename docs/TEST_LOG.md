@@ -53,3 +53,9 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED] Additional Arabic localization: bookmarks, page history, downloads, screenshots and error notices.
 - [IMPLEMENTED] Per-pane Find in page, Next match, Clear highlights, Scroll to top via WebView native APIs.
 - [PENDING] New v0.3.1 build+Release verification and owner testing.
+
+## 2026-11-08 — v0.3.1 CI certification
+- [PASS] CI https://github.com/alwansan/MultiView-Browser/actions/runs/42503968802 status SUCCESS, source 8f3c95ff24bc83cd28a4d9792b0e363957043baa.
+- [PASS] Adaptive grid JVM unit tests, WebAppearance zoom/dark unit tests, source checks, Gradle assembleDebug.
+- [PASS] Artifact 13626239434 and public release APK 54,568 bytes (asset 724629194); SHA256 3f3d55ec7682b2074a6ed168e957e66bbad7d4c21df9fa734d0e3bdb982e496d.
+- [PENDING] Android v0.3.1 on-device UI: Zoom 10/100/200 + re-navigation, apply all save, reload all, Arabic/English switching, experimental dark per-site, Find text in long ChatGPT thread.
