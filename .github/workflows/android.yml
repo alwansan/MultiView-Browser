@@ -53,6 +53,37 @@ jobs:
         run: python3 scripts/source_audit.py
       - name: Assemble debug APK
         run: gradle --no-daemon --stacktrace :app:assembleDebug
+      - name: Use stable APK signing when owner's secrets exist
+        if: github.event_name != 'pull_request'
+        env:
+          MV_KEYSTORE_B64: ${{ secrets.MULTIVIEW_KEYSTORE_B64 }}
+          MV_STORE_PASS: ${{ secrets.MULTIVIEW_STORE_PASS }}
+          MV_KEY_PASS: ${{ secrets.MULTIVIEW_KEY_PASS }}
+          MV_KEY_ALIAS: ${{ secrets.MULTIVIEW_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${MV_KEYSTORE_B64:-}" && -z "${MV_STORE_PASS:-}" && -z "${MV_KEY_PASS:-}" && -z "${MV_KEY_ALIAS:-}" ]]; then
+            echo "Stable signing not configured; using ephemeral debug signature."
+          else
+            test -n "${MV_KEYSTORE_B64:-}"
+            test -n "${MV_STORE_PASS:-}"
+            test -n "${MV_KEY_PASS:-}"
+            test -n "${MV_KEY_ALIAS:-}"
+            ks="$RUNNER_TEMP/multiview-signing.p12"
+            target="$RUNNER_TEMP/multiview-signed.apk"
+            trap 'rm -f "$ks" "$target"' EXIT
+            printf '%s' "$MV_KEYSTORE_B64" | base64 --decode > "$ks"
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign \
+              --ks "$ks" \
+              --ks-pass env:MV_STORE_PASS \
+              --ks-key-alias "$MV_KEY_ALIAS" \
+              --key-pass env:MV_KEY_PASS \
+              --out "$target" app/build/outputs/apk/debug/app-debug.apk
+            mv "$target" app/build/outputs/apk/debug/app-debug.apk
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify \
+              app/build/outputs/apk/debug/app-debug.apk
+            echo "APK signed using owner's stable private GitHub secrets."
+          fi
       - name: Print SHA256
         run: sha256sum app/build/outputs/apk/debug/app-debug.apk
       - name: Upload APK

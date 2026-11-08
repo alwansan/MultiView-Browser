@@ -73,3 +73,5 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED, CI PENDING] Handle locale/layout direction and screen configuration changes in same Activity and refresh URL hints without recreating WebViews. Needs Android 13+/15 actual locale-switch test.
 
 - [IMPLEMENTED / CI PENDING] Battery settings shortcut opens native Android app details; notification permission request when user enables session guard.
+
+- [IMPLEMENTED, CI PENDING] Optional owner-secret stable signing pathway; absent secrets should preserve normal successful debug-build behavior. Actual stable signer is NOT configured yet.

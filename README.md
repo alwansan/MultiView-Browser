@@ -58,3 +58,7 @@ Current verified preview: https://github.com/alwansan/MultiView-Browser/releases
 SHA256: `3f3d55ec7682b2074a6ed168e957e66bbad7d4c21df9fa734d0e3bdb982e496d`
 
 Includes: 10–200% adjustable page content zoom in 10% steps, per-pane/apply-all/save-default, dedicated Reload All, Arabic and English UI, experimental site darkening, in-page search, copy-all URLs. Zoom and dark injection are site-dependent; Android may still reclaim WebView rendering processes. GitHub Actions compilation was successful; phone verification is pending.
+
+## Preserve data across APK updates
+
+Each ephemeral CI debug certificate may differ, requiring an uninstall. For optional consistent APK signatures and retained app data across future updates, see [Arabic stable-signing setup](docs/SIGNING_SETUP_AR.md). The owner's private keystore **must not be committed**.

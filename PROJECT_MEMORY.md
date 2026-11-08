@@ -148,3 +148,8 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 ## Owner device optimization / permission details
 - Settings now exposes Battery/background help opening native app details screen. Xiaomi's official support says No restrictions can ease battery background/network limitations, but not guarantee lifetime; see https://www.mi.com/global/support/faq/details/KA-538010/.
 - When activating foreground session guard on Android 13+ the app requests notification permission so the ongoing notification can be visible; service still uses FGS platform support, and user can switch it off.
+
+## Optional stable preview signing
+- Android debug keys differ per CI runner, causing uninstall/reinstall and loss of session metadata. CI now supports optional MULTIVIEW_KEYSTORE_B64, MULTIVIEW_STORE_PASS, MULTIVIEW_KEY_PASS, MULTIVIEW_KEY_ALIAS GitHub Actions secrets, signs via official apksigner (never logs passwords or key, never commits keystore).
+- With all secrets absent, normal debug APK works; with partially configured secrets workflow fails instead of accidentally publishing mismatched APK. Docs docs/SIGNING_SETUP_AR.md include Termux gh-secret instructions.
+- Owner must perform secret setup; GitHub connector does not expose writing repository secrets. Never claim stable signature is enabled until verified.
