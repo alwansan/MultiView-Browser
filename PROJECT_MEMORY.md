@@ -36,3 +36,13 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - app-debug.apk SHA256: 209e33bcbf89aae25c2e38dbdbd7dfd5048bcb6e2caaf7cc29cb8b353c57e2ef.
 - Prior failures: setup-android@v3 invoked removed 'tools' SDK package; then sdkmanager was not on PATH. Fixed by using existing Ubuntu 24.04 Android SDK platform 35 and build tools.
 - Need actual Android 15 device test. Follow-up commit adds preview release upload and browser security/rotation fixes: verify its Actions outcome separately.
+
+## Verified preview release — 2026-11-08
+- Latest BUILD + UPLOAD + RELEASE: https://github.com/alwansan/MultiView-Browser/actions/runs/42498105704 — conclusion SUCCESS.
+- Source commit built: 3c8744b7941a08ffae2bce16f4eb8898b51db6ce.
+- Artifact ID 13624525836, artifact name multiview-debug-apk.
+- Raw APK direct URL: https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk
+- GitHub prerelease: https://github.com/alwansan/MultiView-Browser/releases/tag/preview-latest
+- APK size 29,385 bytes; SHA256 fa82ab0fd1c111f79ee0b75bc6362a8de55674925bc92690bd537ef7ab156251.
+- All CI steps passed, including publishing the rolling prerelease. Runtime on physical Android remains unverified.
+- **Next task:** device install/screenshots, layout 5-pane density, genuine ChatGPT login/long chats, performance and memory checks, then feature parity (incognito isolation, auto-refresh opt-in, preview history, adaptive UX).

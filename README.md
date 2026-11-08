@@ -10,6 +10,10 @@ A native Android multi-pane browser rebuilt from independently written source fo
 - Keep browser chrome small and usable on phones and tablets, including Android 15 system bars.
 - Ship a GitHub Actions-built debug APK.
 
+**Experimental APK (direct download):** https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk
+
+**GitHub Release:** https://github.com/alwansan/MultiView-Browser/releases/tag/preview-latest
+
 **Status:** Prototype v0.1.0. Compilation, device compatibility and behavioral parity are tested in stages; do not confuse repository commit with a proven working APK. Android can still reclaim WebView renderer memory.
 
 ### Building
