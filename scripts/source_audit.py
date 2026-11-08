@@ -38,8 +38,10 @@ print('Popup/session/lifecycle guards passed.')
 
 assert 'url.split' not in source # URLs should be distributed by lines, not word tokenization.
 assert 'value.split("\\\\r?\\\\n")' in source, 'expected line-oriented URL distribution'
-assert 'Duplicate view' in source and 'Open in another browser' in source
-assert 'web.zoomIn()' in source and 'web.zoomOut()' in source
+assert 'R.string.duplicate_view' in source and 'R.string.external_browser' in source
+assert 'Duplicate view' in (root/'app/src/main/res/values/strings.xml').read_text()
+assert 'zoomPct=WebAppearance.clampZoom(zoomPct+10)' in source
+assert 'zoomPct=WebAppearance.clampZoom(zoomPct-10)' in source
 print('Multi-URL distribution and pane utility checks passed.')
 
 # Localization and content-appearance regression gates.
