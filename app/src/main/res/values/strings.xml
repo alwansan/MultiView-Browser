@@ -129,6 +129,6 @@
     <string name="no_saved_links">Your saved links and history will appear here</string>
     <string name="link_set_saved">Link list saved</string>
     <string name="battery_settings">Battery / background settings</string>
-    <string name="battery_help">On Xiaomi/POCO, open this app's settings, find Battery saver and choose No restrictions if available. Also allow background activity if offered. This may reduce restrictions, but Android can still close the app when memory is low.</string>
+    <string name="battery_help">On Xiaomi/POCO, open the application settings, find Battery saver and choose No restrictions if available. Also allow background activity if offered. This may reduce restrictions, but Android can still close the app when memory is low.</string>
     <string name="open_settings">Open app settings</string>
 </resources>
