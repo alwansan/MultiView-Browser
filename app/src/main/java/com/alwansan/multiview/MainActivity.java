@@ -460,6 +460,7 @@ public final class MainActivity extends Activity {
         final EditText address;
         final TextView number;
         boolean desktop=false;
+        boolean headerBuilt=false;
         Pane(String url) {
             initialUrl=url;
             card=new LinearLayout(MainActivity.this);
@@ -545,48 +546,72 @@ public final class MainActivity extends Activity {
             into.addView(b,lp);
             return b;
         }
+        // Header widgets are constructed ONCE. Layout switching only reparents the
+        // Pane.card (which contains the live WebView) without rebuilding its children.
+        // Re-adding number/address to another parent used to crash on app startup.
         void styleCard() {
             card.setBackground(rounded(cardColor(),12));
-            header.removeAllViews();
-            header.setPadding(dp(4),dp(3),dp(4),0);
-            LinearLayout upper=new LinearLayout(MainActivity.this);
-            upper.setOrientation(LinearLayout.HORIZONTAL);
-            upper.setGravity(Gravity.CENTER_VERTICAL);
-            header.addView(upper,new LinearLayout.LayoutParams(-1,dp(41)));
-            number.setText(String.valueOf(panes.indexOf(this)+1));
-            number.setTextSize(13);
-            number.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
-            number.setGravity(Gravity.CENTER);
-            number.setTextColor(Color.WHITE);
+            if (!headerBuilt) {
+                headerBuilt = true;
+                header.setPadding(dp(4),dp(3),dp(4),0);
+                LinearLayout upper=new LinearLayout(MainActivity.this);
+                upper.setOrientation(LinearLayout.HORIZONTAL);
+                upper.setGravity(Gravity.CENTER_VERTICAL);
+                header.addView(upper,new LinearLayout.LayoutParams(-1,dp(41)));
+                number.setTextSize(13);
+                number.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+                number.setGravity(Gravity.CENTER);
+                number.setTextColor(Color.WHITE);
+                upper.addView(number,new LinearLayout.LayoutParams(dp(28),dp(30)));
+
+                address.setSingleLine(true);
+                address.setTextSize(12);
+                address.setHint("URL or search");
+                address.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_URI);
+                address.setImeOptions(EditorInfo.IME_ACTION_GO);
+                address.setSelectAllOnFocus(true);
+                address.setText(web.getUrl()==null?initialUrl:web.getUrl());
+                address.setOnFocusChangeListener((v,focus)->{if(focus)setActive(this);});
+                address.setOnEditorActionListener((v,action,event)->{
+                    if(action==EditorInfo.IME_ACTION_GO){
+                        navigate(address.getText().toString());
+                        address.clearFocus();
+                        return true;
+                    }
+                    return false;
+                });
+                LinearLayout.LayoutParams inputLp=new LinearLayout.LayoutParams(0,dp(33),1);
+                inputLp.setMargins(dp(5),0,dp(4),0);
+                upper.addView(address,inputLp);
+                Button more=button("⋮",()->paneMenu());
+                upper.addView(more,new LinearLayout.LayoutParams(dp(30),dp(35)));
+
+                LinearLayout tools=new LinearLayout(MainActivity.this);
+                header.addView(tools,new LinearLayout.LayoutParams(-1,dp(41)));
+                iconButton("‹",()->{setActive(this);if(web.canGoBack())web.goBack();},tools);
+                iconButton("›",()->{setActive(this);if(web.canGoForward())web.goForward();},tools);
+                iconButton("↻",()->{setActive(this);web.reload();},tools);
+                iconButton("⌂",()->{setActive(this);navigate(HOME);},tools);
+                iconButton("▣",()->{setActive(this);layoutMode=3;renderLayout();rebuildChrome();saveSession();},tools);
+            }
+            number.setText(String.valueOf(Math.max(0,panes.indexOf(this))+1));
             number.setBackground(rounded(panes.indexOf(this)==active?accent():muted(),9));
-            upper.addView(number,new LinearLayout.LayoutParams(dp(28),dp(30)));
-            address.setSingleLine(true);
-            address.setTextSize(12);
             address.setTextColor(ink());
             address.setHintTextColor(muted());
-            address.setHint("URL or search");
-            address.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_URI);
-            address.setImeOptions(EditorInfo.IME_ACTION_GO);
-            address.setSelectAllOnFocus(true);
             address.setBackground(rounded(bg(),8));
-            address.setText(web.getUrl()==null?initialUrl:web.getUrl());
-            address.setOnFocusChangeListener((v,focus)->{if(focus)setActive(this);});
-            address.setOnEditorActionListener((v,action,event)->{
-                if(action==EditorInfo.IME_ACTION_GO){navigate(address.getText().toString());address.clearFocus();return true;}
-                return false;
-            });
-            LinearLayout.LayoutParams inputLp=new LinearLayout.LayoutParams(0,dp(33),1);
-            inputLp.setMargins(dp(5),0,dp(4),0);
-            upper.addView(address,inputLp);
-            Button more=button("⋮",()->paneMenu());
-            upper.addView(more,new LinearLayout.LayoutParams(dp(30),dp(35)));
-            LinearLayout tools=new LinearLayout(MainActivity.this);
-            header.addView(tools,new LinearLayout.LayoutParams(-1,dp(41)));
-            iconButton("‹",()->{setActive(this);if(web.canGoBack())web.goBack();},tools);
-            iconButton("›",()->{setActive(this);if(web.canGoForward())web.goForward();},tools);
-            iconButton("↻",()->{setActive(this);web.reload();},tools);
-            iconButton("⌂",()->{setActive(this);navigate(HOME);},tools);
-            iconButton("▣",()->{setActive(this);layoutMode=3;renderLayout();rebuildChrome();saveSession();},tools);
+            retintHeaderButtons(header);
+        }
+        private void retintHeaderButtons(ViewGroup group) {
+            for(int i=0;i<group.getChildCount();i++) {
+                View child=group.getChildAt(i);
+                if(child instanceof Button) {
+                    Button b=(Button)child;
+                    b.setTextColor(ink());
+                    b.setBackground(rounded(cardColor(),11));
+                } else if(child instanceof ViewGroup) {
+                    retintHeaderButtons((ViewGroup)child);
+                }
+            }
         }
         void navigate(String text){web.loadUrl(normalize(text));setActive(this);saveSession();}
         void paneMenu() {

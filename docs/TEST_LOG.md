@@ -11,3 +11,13 @@
 - [PENDING] 2 / 5 / 10 / 20 pane memory and ChatGPT long-thread tests.
 
 Do not convert PENDING into PASS without run/device evidence.
+
+## 2026-11-08 — on-device startup crash report (owner)
+- [FAIL CONFIRMED] v0.1.0 installation launches into system crash report. Screenshot shows:
+  `RuntimeException: Unable to start activity ... MainActivity` caused by
+  `IllegalStateException: The specified child already has a parent. You must call removeView() on the child's parent first.`
+  Call chain: `MainActivity$Pane.styleCard` → `renderLayout` → `addPane` → `onCreate`. Screenshot reported by owner.
+- Root cause: `styleCard()` called `header.removeAllViews()` but reused its nested `number` and `address` widgets, still attached to the previous detached `upper` group. This occurs on first pane add/reflow.
+- Fix: build header once via `headerBuilt`, keep original edit field and WebView; update colors/index without replacing header children. This additionally avoids discarding in-progress URL input during focus/layout change.
+- [PENDING] CI build and new APK release for v0.1.1-prototype.
+- [PENDING] Confirm launch + layout reflow on owner phone. Build success alone cannot prove runtime fix.

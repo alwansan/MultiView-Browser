@@ -46,3 +46,10 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - APK size 29,385 bytes; SHA256 fa82ab0fd1c111f79ee0b75bc6362a8de55674925bc92690bd537ef7ab156251.
 - All CI steps passed, including publishing the rolling prerelease. Runtime on physical Android remains unverified.
 - **Next task:** device install/screenshots, layout 5-pane density, genuine ChatGPT login/long chats, performance and memory checks, then feature parity (incognito isolation, auto-refresh opt-in, preview history, adaptive UX).
+
+## Crash RCA and v0.1.1 repair — 2026-11-08
+- Owner's first launch v0.1.0 on Xiaomi Android 15 failed: MainActivity$Pane.styleCard reused number/address TextView/EditText while those controls remained attached to previous detached LinearLayout parent, causing IllegalStateException "specified child already has a parent"; report indicated styleCard line 562, renderLayout line 297 and addPane line 225.
+- Do NOT reintroduce `header.removeAllViews()` inside `styleCard()`; never reparent the same number/address controls to newly allocated header rows.
+- Replacement approach: create pane header once with `headerBuilt`, re-style without reparenting; pane card can move between layouts and WebView stays live. Regression script source_audit.py enforces.
+- Version bump to 0.1.1-prototype / versionCode 2. New build/release and on-device retest pending.
+- ACTION FOR OWNER: uninstall previous DEBUG APK before installing another Actions-built debug APK if signing certificates are incompatible; debug keystore is not stable across clean CI runners.

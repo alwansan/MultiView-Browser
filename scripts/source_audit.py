@@ -9,3 +9,12 @@ for token in ('INTERNET','MainActivity','android:exported="true"'):
     assert token in manifest, f'missing manifest marker: {token}'
 assert 'SYSTEM_ALERT_WINDOW' not in manifest, 'unnecessary overlay permission'
 print('Static source guard passed. This is NOT a runtime verification.')
+
+# Regression guard for the owner's launch crash (IllegalStateException: child has parent).
+# The pane address + number controls have stable parents for the pane's lifetime.
+pane_style=source.split('void styleCard() {',1)[1].split('void navigate(',1)[0]
+assert 'if (!headerBuilt)' in pane_style, 'Header must be created once'
+assert 'header.removeAllViews()' not in pane_style, 'Rebuilding header reparents child views and crashes on startup'
+assert 'upper.addView(number' in pane_style and 'upper.addView(address' in pane_style
+assert 'retintHeaderButtons(header)' in pane_style
+print('Pane header lifecycle regression checks passed.')
