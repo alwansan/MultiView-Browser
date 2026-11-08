@@ -183,11 +183,21 @@ public final class MainActivity extends Activity {
             .show();
     }
     private void showMainMenu() {
-        String[] actions = {"Keep screen awake: " + (keepAwake ? "ON" : "OFF"), "Clear browsing history", "About / limitations"};
+        String[] actions = {"Keep screen awake: " + (keepAwake ? "ON" : "OFF"), "Reload all panes now", "Clear browsing history", "Clear cookies and cache", "About / limitations"};
         new AlertDialog.Builder(this).setTitle("MultiView options").setItems(actions, (d,which) -> {
             if(which==0) { keepAwake=!keepAwake; applyAwake(); saveSession(); toast(keepAwake ? "Screen stays awake" : "Normal sleep"); }
-            if(which==1) new AlertDialog.Builder(this).setMessage("Clear local visited-page list?").setPositiveButton("Clear",(di,w)->getPreferences(0).edit().remove("history").apply()).setNegativeButton("Cancel",null).show();
-            if(which==2) new AlertDialog.Builder(this).setTitle("MultiView Browser")
+            if(which==1) for(Pane p:panes) p.web.reload();
+            if(which==2) new AlertDialog.Builder(this).setMessage("Clear local visited-page list?").setPositiveButton("Clear",(di,w)->getPreferences(0).edit().remove("history").apply()).setNegativeButton("Cancel",null).show();
+            if(which==3) new AlertDialog.Builder(this)
+                .setTitle("Clear browsing data")
+                .setMessage("This signs you out of websites in every normal pane. Continue?")
+                .setPositiveButton("Clear", (di,w)->{
+                    CookieManager.getInstance().removeAllCookies(ok->CookieManager.getInstance().flush());
+                    for(Pane p:panes) p.web.clearCache(true);
+                    getPreferences(0).edit().remove("history").apply();
+                    toast("Cookies and cache cleared");
+                }).setNegativeButton("Cancel",null).show();
+            if(which==4) new AlertDialog.Builder(this).setTitle("MultiView Browser")
                 .setMessage("Prototype 0.1.0\nNative independent WebViews. Android may reclaim renderers under memory pressure. Normal panes share the Android WebView cookie profile; private per-pane accounts are not yet supported.").setPositiveButton("OK",null).show();
         }).show();
     }
@@ -377,6 +387,10 @@ public final class MainActivity extends Activity {
             getPreferences(0).edit().putString("session",state.toString()).apply();
         } catch(Exception ignored){}
     }
+    @Override public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        renderLayout();
+    }
     @Override protected void onStop(){ saveSession();super.onStop(); }
     @Override public void onBackPressed() {
         if(panes.size()>0 && panes.get(active).web.canGoBack())panes.get(active).web.goBack();
@@ -475,6 +489,9 @@ public final class MainActivity extends Activity {
             s.setSupportMultipleWindows(false);
             s.setJavaScriptCanOpenWindowsAutomatically(false);
             s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+            s.setAllowFileAccess(false);
+            s.setAllowFileAccessFromFileURLs(false);
+            s.setAllowUniversalAccessFromFileURLs(false);
             if(Build.VERSION.SDK_INT>=26)s.setSafeBrowsingEnabled(true);
             CookieManager.getInstance().setAcceptCookie(true);
             CookieManager.getInstance().setAcceptThirdPartyCookies(web,true);

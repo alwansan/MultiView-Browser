@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -47,3 +47,14 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish rolling experimental APK
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view preview-latest >/dev/null 2>&1; then
+            gh release create preview-latest --title "MultiView Browser · experimental preview" --notes "Automated build of the latest main. Development-only, not device-validated. Download app-debug.apk below." --prerelease --target "$GITHUB_SHA"
+          fi
+          gh release upload preview-latest app/build/outputs/apk/debug/app-debug.apk --clobber

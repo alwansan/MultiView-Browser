@@ -29,3 +29,10 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 2. Inspect latest Actions run and failed steps. Fix compilation without breaking WebView retention.
 3. Get first artifact; install on user phone; compare reference app visually (screenshots/video) and test 2, 5, 10, 20 pages.
 4. Record actual pass/fail in docs/TEST_LOG.md and refresh this memory.
+
+## CI verification — 2026-11-08
+- Successful build: https://github.com/alwansan/MultiView-Browser/actions/runs/42497820917
+- Commit 8113cf5ab54bc9282542f5a748406f12c97fc229, artifact ID 13624141929, name multiview-debug-apk.
+- app-debug.apk SHA256: 209e33bcbf89aae25c2e38dbdbd7dfd5048bcb6e2caaf7cc29cb8b353c57e2ef.
+- Prior failures: setup-android@v3 invoked removed 'tools' SDK package; then sdkmanager was not on PATH. Fixed by using existing Ubuntu 24.04 Android SDK platform 35 and build tools.
+- Need actual Android 15 device test. Follow-up commit adds preview release upload and browser security/rotation fixes: verify its Actions outcome separately.
