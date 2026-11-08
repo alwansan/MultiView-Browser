@@ -1195,6 +1195,7 @@ public final class MainActivity extends Activity {
             if(toolsRow!=null)toolsRow.setVisibility(compact?View.GONE:View.VISIBLE);
             number.setText(String.valueOf(Math.max(0,panes.indexOf(this))+1));
             number.setBackground(rounded(panes.indexOf(this)==active?accent():muted(),9));
+            address.setHint(t(R.string.url_or_search));
             address.setTextColor(ink());
             address.setHintTextColor(muted());
             address.setBackground(rounded(bg(),8));

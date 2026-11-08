@@ -69,3 +69,5 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED, CI PENDING] Main-toolbar Links shortcut, multiline editor with bookmark/history rows below, tap-to-open/paste and '+' append, saved multi-URL batches.
 
 - [IMPLEMENTED/CI PENDING] On cold process restart, eager-load visible/active panes only; defer other saved pages to explicit tap-to-restore to avoid mass reloading. Added SessionRestorePlan JVM tests.
+
+- [IMPLEMENTED, CI PENDING] Handle locale/layout direction and screen configuration changes in same Activity and refresh URL hints without recreating WebViews. Needs Android 13+/15 actual locale-switch test.

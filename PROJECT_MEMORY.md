@@ -140,3 +140,7 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - This avoids a simultaneous load/refresh of all 20 pages after Android actually kills the app. It cannot recover old JS heap or unsent DOM content.
 - When renderer dies in live process, impacted panes remain manually recoverable, no automatic cross-tab cascade.
 - Unit JVM test covers 5 and 20 page scenarios. CI/device verification pending.
+
+## Configuration-change protection
+- Manifest now explicitly handles locale/layoutDirection/size/screenLayout/fontScale/uiMode so Activity normally keeps existing WebViews alive when Android 13+ per-app language changes or window dimensions shift.
+- onConfigurationChanged re-renders containers and toolbar while Pane.styleCard updates URL input hint in selected locale; historical Android <=12 language-picker path still explicitly recreates Activity and can reload. Confirm on real Android device.
