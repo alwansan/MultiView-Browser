@@ -59,3 +59,9 @@ Do not convert PENDING into PASS without run/device evidence.
 - [PASS] Adaptive grid JVM unit tests, WebAppearance zoom/dark unit tests, source checks, Gradle assembleDebug.
 - [PASS] Artifact 13626239434 and public release APK 54,568 bytes (asset 724629194); SHA256 3f3d55ec7682b2074a6ed168e957e66bbad7d4c21df9fa734d0e3bdb982e496d.
 - [PENDING] Android v0.3.1 on-device UI: Zoom 10/100/200 + re-navigation, apply all save, reload all, Arabic/English switching, experimental dark per-site, Find text in long ChatGPT thread.
+
+## 2026-11-08 — v0.4.0 retention development
+- [IMPLEMENTED / CI PENDING] Back minimizes instead of finishing Activity; explicit renderer priority; active WebView bounded back-stack saveState/restoreState + per-pane scroll metadata.
+- [IMPLEMENTED / CI PENDING] Opt-in same-process foreground service with ongoing notification, stop action, service type specialUse, Android 14+ permissions; Android 15 still allowed to kill process.
+- [IMPLEMENTED / CI PENDING] Renderer death cleanup with tap-to-restore instead of auto-reloading content in background.
+- [PENDING] Verify GitHub Actions, Android 15 permission behavior, long chat after 10+ minutes background, battery impact and process death.

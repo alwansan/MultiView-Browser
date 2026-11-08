@@ -107,4 +107,16 @@
     <string name="find_hint">اكتب النص المراد البحث عنه</string>
     <string name="find">بحث</string>
     <string name="no_search">ابحث عن كلمة أولاً</string>
+    <string name="links_short">روابط</string>
+    <string name="keep_session">حماية الجلسة النشطة</string>
+    <string name="keep_session_explain">تشغّل هذه الميزة إشعاراً دائماً أثناء عمل المتصفح بالخلفية. قد تقلل احتمال إغلاق التطبيق لكنها لا تمنع قتل النظام للعمليات أو تعطل محرك الويب أو إعادة التحميل بعد إعادة التشغيل. تستهلك بطارية إضافية ويمكن إيقافها هنا أو من الإشعار.</string>
+    <string name="keep_session_notification">جلسة المتصفح نشطة. اضغط للعودة أو الإيقاف.</string>
+    <string name="keepalive_unavailable">تعذر تفعيل حماية الجلسة في الخلفية</string>
+    <string name="enable">تفعيل</string>
+    <string name="disable">تعطيل</string>
+    <string name="session_info">حالة الجلسة</string>
+    <string name="session_details">تبقى الصفحات حية ما دام أندرويد يحتفظ بعملية التطبيق. الحماية بالخلفية اختيارية. عند إنهاء محرك العرض يجب استعادة الصفحة يدوياً، وقد لا يمكن استرجاع النصوص غير المرسلة.</string>
+    <string name="renderer_lost_count">عدد توقفات محرك العرض في هذه الجلسة</string>
+    <string name="renderer_recover_prompt">توقف محرك عرض صفحة. اضغط عليها لاستعادتها.</string>
+    <string name="recovery_tap">توقفت الصفحة بعد إنهاء أندرويد لمحرك العرض. اضغط هنا لاستعادة هذه الصفحة فقط.</string>
 </resources>

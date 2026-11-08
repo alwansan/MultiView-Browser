@@ -17,6 +17,9 @@ import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.text.TextWatcher;
+import android.text.Editable;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
@@ -76,6 +79,10 @@ public final class MainActivity extends Activity {
     private boolean defaultSiteDark = false;
     private boolean keepAwake = false;
     private boolean booting = true;
+    private Bundle pendingWebHistory;
+    private int pendingWebIndex = -1;
+    private boolean visibleActivity = false;
+    private int rendererDeaths = 0;
     private final int[] modeLabels = {R.string.fit_grid, R.string.vertical, R.string.horizontal, R.string.focus};
     private String t(int id){return getString(id);}
     @Override protected void attachBaseContext(Context base){
@@ -92,6 +99,10 @@ public final class MainActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
+        if(state!=null){
+            pendingWebIndex=state.getInt("saved_web_index",-1);
+            pendingWebHistory=state.getBundle("saved_web_history");
+        }
         getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -125,6 +136,27 @@ public final class MainActivity extends Activity {
         rebuildChrome();
         renderLayout();
         applyAwake();
+        if(keepAliveRequested())setSessionGuard(true);
+    }
+    private boolean keepAliveRequested(){
+        return getSharedPreferences("session_guard",MODE_PRIVATE).getBoolean("enabled",false);
+    }
+    private void setSessionGuard(boolean enabled){
+        try{
+            if(enabled){
+                Intent intent=new Intent(this,SessionKeepAliveService.class);
+                if(Build.VERSION.SDK_INT>=26)startForegroundService(intent);
+                else startService(intent);
+            }else{
+                stopService(new Intent(this,SessionKeepAliveService.class));
+            }
+            getSharedPreferences("session_guard",MODE_PRIVATE)
+                .edit().putBoolean("enabled",enabled).apply();
+        }catch(RuntimeException exception){
+            getSharedPreferences("session_guard",MODE_PRIVATE)
+                .edit().putBoolean("enabled",false).apply();
+            toast(t(R.string.keepalive_unavailable));
+        }
     }
 
     private int dp(float px) { return Math.round(getResources().getDisplayMetrics().density * px); }
@@ -207,11 +239,11 @@ public final class MainActivity extends Activity {
         bottomBar.removeAllViews();
         bottomBar.setPadding(dp(5),dp(6),dp(5),dp(6));
         bottomBar.setGravity(Gravity.CENTER_VERTICAL);
-        navButton("◫ "+t(R.string.layout),this::showLayouts,1.15f);
-        navButton("± "+t(R.string.zoom),()->showZoomDialog(panes.get(active)),1.0f);
-        navButton("↻ "+t(R.string.all),this::confirmReloadAll,0.9f);
-        navButton("▤ "+t(R.string.views),this::selectFocusedPane,1.05f);
-        navButton("★ "+t(R.string.saved),this::showSavedMenu,1.0f);
+        navButton("◫ "+t(R.string.layout),this::showLayouts,1.08f);
+        navButton("⇄ "+t(R.string.links_short),this::showUrlDistribution,1.20f);
+        navButton("± "+t(R.string.zoom),()->showZoomDialog(panes.get(active)),0.95f);
+        navButton("↻ "+t(R.string.all),this::confirmReloadAll,0.85f);
+        navButton("★ "+t(R.string.saved),this::showSavedMenu,1.05f);
         navButton("⋮ "+t(R.string.more),this::showMainMenu,1.0f);
     }
     private void navButton(String label,Runnable run,float weight) {
@@ -331,6 +363,8 @@ public final class MainActivity extends Activity {
             t(R.string.site_dark_all)+" · "+(defaultSiteDark?t(R.string.on):t(R.string.off)),
             t(R.string.language),
             t(R.string.copy_urls),
+            t(R.string.keep_session)+" · "+(keepAliveRequested()?t(R.string.on):t(R.string.off)),
+            t(R.string.session_info),
             t(R.string.clear_history),
             t(R.string.clear_cookies),
             t(R.string.about)
@@ -353,11 +387,23 @@ public final class MainActivity extends Activity {
                     case 6:
                         copyAllUrls();break;
                     case 7:
+                        new AlertDialog.Builder(this).setTitle(t(R.string.keep_session))
+                            .setMessage(t(R.string.keep_session_explain))
+                            .setPositiveButton(keepAliveRequested()?t(R.string.disable):t(R.string.enable),
+                                (d,w)->setSessionGuard(!keepAliveRequested()))
+                            .setNegativeButton(t(R.string.cancel),null).show();
+                        break;
+                    case 8:
+                        new AlertDialog.Builder(this).setTitle(t(R.string.session_info))
+                            .setMessage(t(R.string.session_details)+"\n"+
+                                t(R.string.renderer_lost_count)+": "+rendererDeaths)
+                            .setPositiveButton(t(R.string.ok),null).show();break;
+                    case 9:
                         new AlertDialog.Builder(this).setTitle(t(R.string.clear_history))
                             .setPositiveButton(t(R.string.clear),
                                 (d,w)->getPreferences(0).edit().remove("history").apply())
                             .setNegativeButton(t(R.string.cancel),null).show();break;
-                    case 8:
+                    case 10:
                         new AlertDialog.Builder(this).setTitle(t(R.string.clear_cookies))
                             .setMessage(t(R.string.clear_cookies_warning))
                             .setPositiveButton(t(R.string.clear),(d,w)->{
@@ -366,7 +412,7 @@ public final class MainActivity extends Activity {
                                 for(Pane p:panes)p.web.clearCache(true);
                                 getPreferences(0).edit().remove("history").apply();
                             }).setNegativeButton(t(R.string.cancel),null).show();break;
-                    case 9:
+                    case 11:
                         new AlertDialog.Builder(this).setTitle(t(R.string.about))
                             .setMessage(t(R.string.about_text))
                             .setPositiveButton(t(R.string.ok),null).show();break;
@@ -392,7 +438,10 @@ public final class MainActivity extends Activity {
     }
     private void addPane(String url) {addPane(url,false);}
     private void addPane(String url,boolean desktop) {
-        panes.add(new Pane(url,desktop,true));
+        addPane(url,desktop,true);
+    }
+    private void addPane(String url,boolean desktop,boolean autoLoad){
+        panes.add(new Pane(url,desktop,autoLoad));
         if(!booting){active=panes.size()-1;renderLayout();rebuildChrome();saveSession();}
     }
     private void resizePanes(int requested) {
@@ -582,11 +631,23 @@ public final class MainActivity extends Activity {
             JSONArray flags=state.optJSONArray("desktopFlags");
             JSONArray zooms=state.optJSONArray("zoomPercents");
             JSONArray siteDarks=state.optJSONArray("siteDarks");
+            JSONArray scrollXs=state.optJSONArray("scrollXs");
+            JSONArray scrollYs=state.optJSONArray("scrollYs");
             if(urls!=null)for(int i=0;i<Math.min(urls.length(),MAX_PANES);i++){
                 String url=urls.optString(i,"about:blank");
+                boolean restoreBackStack=pendingWebHistory!=null && i==pendingWebIndex;
                 addPane(url.startsWith("http")||url.equals("about:blank")?url:"about:blank",
-                    flags!=null && flags.optBoolean(i,false));
+                    flags!=null && flags.optBoolean(i,false),!restoreBackStack);
                 Pane pane=panes.get(panes.size()-1);
+                if(restoreBackStack){
+                    try{
+                        if(pane.web.restoreState(pendingWebHistory)==null)pane.web.loadUrl(url);
+                    }catch(RuntimeException exception){
+                        pane.web.loadUrl(url);
+                    }
+                }
+                pane.pendingScrollX=scrollXs==null?0:scrollXs.optInt(i,0);
+                pane.pendingScrollY=scrollYs==null?0:scrollYs.optInt(i,0);
                 pane.zoomPct=zooms!=null?WebAppearance.clampZoom(zooms.optInt(i,defaultZoom)):defaultZoom;
                 pane.websiteDark=siteDarks!=null?siteDarks.optBoolean(i,defaultSiteDark):defaultSiteDark;
                 pane.applyAppearance();
@@ -603,13 +664,18 @@ public final class MainActivity extends Activity {
             JSONArray desktops=new JSONArray();
             JSONArray zooms=new JSONArray();
             JSONArray siteDarks=new JSONArray();
+            JSONArray scrollXs=new JSONArray(),scrollYs=new JSONArray();
             for(Pane pane:panes) {
                 String url=pane.web.getUrl();
                 urls.put(url==null?pane.initialUrl:url);
                 desktops.put(pane.desktop);
                 zooms.put(pane.zoomPct);
                 siteDarks.put(pane.websiteDark);
+                scrollXs.put(pane.web.getScrollX());
+                scrollYs.put(pane.web.getScrollY());
             }
+            state.put("scrollXs",scrollXs);
+            state.put("scrollYs",scrollYs);
             state.put("urls",urls);
             state.put("desktopFlags",desktops);
             state.put("zoomPercents",zooms);
@@ -627,7 +693,47 @@ public final class MainActivity extends Activity {
         renderLayout();
         rebuildChrome();
     }
-    @Override protected void onStop(){ saveSession();super.onStop(); }
+    @Override protected void onResume(){
+        super.onResume();
+        visibleActivity=true;
+        for(Pane pane:panes)pane.web.onResume();
+    }
+    @Override protected void onPause(){
+        visibleActivity=false;
+        saveSession();
+        // Do not call WebView.pauseTimers(): it would suspend all pages globally.
+        super.onPause();
+    }
+    @Override protected void onStop(){
+        saveSession();
+        super.onStop();
+    }
+    @Override protected void onSaveInstanceState(Bundle out){
+        saveSession();
+        // Save only the active navigation history within a strict Binder budget.
+        // WebView.saveState cannot preserve rendered DOM or unsent JavaScript state.
+        if(active>=0 && active<panes.size()){
+            Bundle webHistory=new Bundle();
+            try{
+                if(panes.get(active).web.saveState(webHistory)!=null){
+                    Parcel p=Parcel.obtain();
+                    try{
+                        p.writeBundle(webHistory);
+                        if(p.dataSize()<=160*1024){
+                            out.putInt("saved_web_index",active);
+                            out.putBundle("saved_web_history",webHistory);
+                        }
+                    }finally{p.recycle();}
+                }
+            }catch(RuntimeException ignored){}
+        }
+        super.onSaveInstanceState(out);
+    }
+    @Override public void onTrimMemory(int level){
+        super.onTrimMemory(level);
+        // Preserve metadata; don't destroy live WebViews on background trim.
+        saveSession();
+    }
     @Override protected void onDestroy() {
         if(fileCallback!=null){fileCallback.onReceiveValue(null);fileCallback=null;}
         for(Pane p:panes) {
@@ -644,7 +750,10 @@ public final class MainActivity extends Activity {
         if(panes.size()>0 && panes.get(active).web.canGoBack())panes.get(active).web.goBack();
         else if(layoutMode==3 && panes.size()>1){
             layoutMode=0;renderLayout();rebuildChrome();saveSession();
-        }else super.onBackPressed();
+        }else{
+            saveSession();
+            moveTaskToBack(true); // Minimize instead of Activity.finish()/destroy.
+        }
     }
     @Override protected void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
@@ -713,6 +822,8 @@ public final class MainActivity extends Activity {
         LinearLayout toolsRow;
         String pageTitle="";
         String findQuery="";
+        int pendingScrollX=0,pendingScrollY=0;
+        TextView recoveryNotice=null;
         boolean desktop=false;
         boolean headerBuilt=false;
         int zoomPct=defaultZoom;
@@ -736,6 +847,9 @@ public final class MainActivity extends Activity {
         }
         private void configureWeb() {
             WebSettings s=web.getSettings();
+            // IMPORTANT: retain default RENDERER_PRIORITY_IMPORTANT even if not visible.
+            // Waiving priority for off-screen panes causes avoidable renderer losses.
+            web.setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_IMPORTANT,false);
             s.setJavaScriptEnabled(true);
             if(desktop)s.setUserAgentString(DESKTOP_UA);
             s.setDomStorageEnabled(true);
@@ -775,27 +889,33 @@ public final class MainActivity extends Activity {
                 @Override public void onPageFinished(WebView view,String url) {
                     if(!address.hasFocus())address.setText(url);
                     applyAppearance();
+                    if(pendingScrollY>0||pendingScrollX>0){
+                        final int x=pendingScrollX,y=pendingScrollY;
+                        pendingScrollX=0;pendingScrollY=0;
+                        web.postDelayed(()->web.scrollTo(x,y),250);
+                    }
                     saveSession();
                 }
-                @Override public boolean onRenderProcessGone(WebView view, android.webkit.RenderProcessGoneDetail detail) {
-                    toast(t(R.string.renderer_restored));
-                    // A killed renderer cannot be reused. Replace only this pane, never
-                    // destroy unrelated live panes. Deferred until the next build.
+                @Override public boolean onRenderProcessGone(WebView view,android.webkit.RenderProcessGoneDetail detail){
+                    rendererDeaths++;
                     int index=panes.indexOf(Pane.this);
-                    if(index>=0) {
+                    if(index>=0){
                         String current=view.getUrl()==null?initialUrl:view.getUrl();
-                        panes.remove(index);
                         ViewGroup parent=(ViewGroup)card.getParent();
                         if(parent!=null)parent.removeView(card);
                         card.removeView(view);
                         view.destroy();
-                        Pane replacement=new Pane(current,desktop,true);
+                        Pane replacement=new Pane(current,desktop,false);
                         replacement.zoomPct=zoomPct;
                         replacement.websiteDark=websiteDark;
-                        panes.add(index,replacement);
-                        replacement.applyAppearance();
-                        active=index;renderLayout();saveSession();
+                        replacement.pendingScrollX=pendingScrollX;
+                        replacement.pendingScrollY=pendingScrollY;
+                        replacement.showRecovery();
+                        panes.set(index,replacement);
+                        renderLayout();saveSession();
+                        if(visibleActivity)toast(t(R.string.renderer_recover_prompt));
                     }
+                    // The renderer is dead; no WebView that shared it can be reused.
                     return true;
                 }
             });
@@ -830,6 +950,26 @@ public final class MainActivity extends Activity {
             });
             web.setDownloadListener((url,userAgent,contentDisposition,mimetype,contentLength)->
                 download(url,contentDisposition,mimetype,userAgent));
+        }
+        void showRecovery(){
+            if(recoveryNotice!=null)return;
+            web.setVisibility(View.GONE);
+            TextView notice=new TextView(MainActivity.this);
+            recoveryNotice=notice;
+            notice.setText(t(R.string.recovery_tap));
+            notice.setTextColor(ink());
+            notice.setTextSize(14);
+            notice.setGravity(Gravity.CENTER);
+            notice.setPadding(dp(15),dp(15),dp(15),dp(15));
+            notice.setBackground(rounded(cardColor(),14));
+            card.addView(notice,new LinearLayout.LayoutParams(-1,0,1));
+            notice.setOnClickListener(v->{
+                if(recoveryNotice==null)return;
+                card.removeView(recoveryNotice);
+                recoveryNotice=null;
+                web.setVisibility(View.VISIBLE);
+                web.loadUrl(initialUrl);
+            });
         }
         void applyAppearance(){
             if(web==null)return;

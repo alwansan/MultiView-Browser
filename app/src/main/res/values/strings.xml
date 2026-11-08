@@ -107,4 +107,16 @@
     <string name="find_hint">Enter text to search in this page</string>
     <string name="find">Find</string>
     <string name="no_search">Find a word first</string>
+    <string name="links_short">Links</string>
+    <string name="keep_session">Protect active session</string>
+    <string name="keep_session_explain">This keeps a visible ongoing notification while your browser runs in the background. It may reduce Android process termination but cannot prevent system memory kills, WebView renderer crashes or reloading after reboot. Uses extra battery. You can stop it here or from the notification.</string>
+    <string name="keep_session_notification">Browser session active. Tap to return or stop.</string>
+    <string name="keepalive_unavailable">Could not enable background session protection</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="session_info">Session health</string>
+    <string name="session_details">Pages remain alive while Android keeps the process. Background protection is optional. If the renderer is killed, a tab must be manually restored; unsent page content cannot be recovered automatically.</string>
+    <string name="renderer_lost_count">Renderer resets this session</string>
+    <string name="renderer_recover_prompt">A web renderer stopped. Tap the affected page to restore it.</string>
+    <string name="recovery_tap">Page paused after Android reclaimed its renderer. Tap here to reload this page only.</string>
 </resources>

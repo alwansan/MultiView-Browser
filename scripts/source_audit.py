@@ -65,3 +65,15 @@ assert 'web.findAllAsync(findQuery)' in source
 assert 'web.findNext(true)' in source and 'web.clearMatches()' in source
 assert 'web.scrollTo(0,0)' in source
 print('In-page find/navigation guards passed.')
+
+# Session retention: do not finish Activity on Back; never pause all WebViews.
+assert 'moveTaskToBack(true)' in source
+assert 'WebView.RENDERER_PRIORITY_IMPORTANT,false' in source
+assert 'onSaveInstanceState(Bundle out)' in source and 'p.dataSize()<=160*1024' in source
+assert 'pendingWebHistory' in source and 'web.restoreState(pendingWebHistory)' in source
+assert 'void showRecovery()' in source and 'new Pane(current,desktop,false)' in source
+assert 'SessionKeepAliveService.class' in source
+assert 'android:foregroundServiceType="specialUse"' in manifest
+assert 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE' in manifest
+assert 'pauseTimers()' not in source.split('private void configureWeb()',1)[0]
+print('Background session retention guards passed.')

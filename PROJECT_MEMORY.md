@@ -119,3 +119,11 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Feature scope: page content zoom 10–200% in 10% steps; all-pages + saved default, one-page controls; toolbar reload all with confirmation; Arabic/English app strings and in-app language picker; experimental CSS dark websites per-pane/all, saved; copy all URLs; native find in page, next, clear, scroll top. On-page visual behavior is NOT yet validated on owner device for this build.
 - Owner reports previous 0.2.2 APK runs without crashes or issues; v0.3.1 still requires manual device checks, particularly ChatGPT CSS zoom and dark mode, Arabic screenshots, language-switch form restoration.
 - Important: app debug signing key may differ between workflows; if update cannot install, manually save URL lists first and uninstall old debug. Existing session settings may be lost if app is uninstalled.
+
+## 2026-11-08 v0.4.0 initial session retention architecture
+- User reports all pages often reload on returning from background, requests impossible absolute never-kill guarantee. Android official docs make clear app and renderer may be killed independently; background service is not a guarantee.
+- Implemented: Back when no history minimizes task (moveTaskToBack) instead of finishing; preserve highest default renderer priority, waiveWhenNotVisible=false; no WebView.pauseTimers.
+- Opt-in SessionKeepAliveService foreground service type specialUse, ongoing notification + stop action, same process as WebViews. Only started while Activity visible/user opted-in; not boot auto-start. Increased process importance while running, but Android/MIUI can kill; use has battery/memory costs. Special-use FGS declaration may require Play review if later publishing.
+- Limited onSaveInstanceState WebView navigation history for active pane <=160KiB, and persistent scroll positions per pane in private preferences. saveState does NOT save rendered DOM or unsent chat text.
+- Renderer gone now removes/destroys invalid WebView and creates unloaded replacement with tap-to-restore placeholder; avoids mass auto-reload if renderer loss occurs in background. No dead WebView reused.
+- Next: enhance top-level Link shortcut and local bookmark/history chooser; confirm CI and run device tests.
