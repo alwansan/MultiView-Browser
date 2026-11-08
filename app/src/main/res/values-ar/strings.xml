@@ -119,4 +119,13 @@
     <string name="renderer_lost_count">عدد توقفات محرك العرض في هذه الجلسة</string>
     <string name="renderer_recover_prompt">توقف محرك عرض صفحة. اضغط عليها لاستعادتها.</string>
     <string name="recovery_tap">توقفت الصفحة بعد إنهاء أندرويد لمحرك العرض. اضغط هنا لاستعادة هذه الصفحة فقط.</string>
+    <string name="link_picker_help">اضغط رابطاً محفوظاً لفتحه في الصفحة النشطة، أو اضغط + لإضافته إلى المحرر. افتح عدة روابط بتوزيعها على الصفحات.</string>
+    <string name="save_link_set">حفظ القائمة</string>
+    <string name="saved_link_sets">قوائم الروابط المحفوظة</string>
+    <string name="open_saved_set">فتح القائمة</string>
+    <string name="paste_set">لصق</string>
+    <string name="open_one">فتح الرابط</string>
+    <string name="append_one">إضافة الرابط</string>
+    <string name="no_saved_links">ستظهر هنا روابطك المحفوظة والسجل</string>
+    <string name="link_set_saved">تم حفظ قائمة الروابط</string>
 </resources>

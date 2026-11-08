@@ -65,3 +65,5 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED / CI PENDING] Opt-in same-process foreground service with ongoing notification, stop action, service type specialUse, Android 14+ permissions; Android 15 still allowed to kill process.
 - [IMPLEMENTED / CI PENDING] Renderer death cleanup with tap-to-restore instead of auto-reloading content in background.
 - [PENDING] Verify GitHub Actions, Android 15 permission behavior, long chat after 10+ minutes background, battery impact and process death.
+
+- [IMPLEMENTED, CI PENDING] Main-toolbar Links shortcut, multiline editor with bookmark/history rows below, tap-to-open/paste and '+' append, saved multi-URL batches.

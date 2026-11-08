@@ -127,3 +127,10 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Limited onSaveInstanceState WebView navigation history for active pane <=160KiB, and persistent scroll positions per pane in private preferences. saveState does NOT save rendered DOM or unsent chat text.
 - Renderer gone now removes/destroys invalid WebView and creates unloaded replacement with tap-to-restore placeholder; avoids mass auto-reload if renderer loss occurs in background. No dead WebView reused.
 - Next: enhance top-level Link shortcut and local bookmark/history chooser; confirm CI and run device tests.
+
+## v0.4.0 link shortcut and saved link picker
+- Main toolbar now has direct Links action instead of Views (tap title for pane chooser).
+- Links dialog contains multiline editor + saved groups (up to 12 saved lists, each up to 20 URLs), bookmarks, recent history, each displayed below editor.
+- Tap URL opens it in ACTIVE pane and pastes into input. Tap '+' adds URL to multiline editor. For saved list, Open list distributes URLs and Paste only fills editor.
+- Multi-URL distributor grows pane count once if necessary, up to 20 (never silently close existing tabs), then loads one URL per pane. Single URL still loads in all panes.
+- No network for suggestions; all based on local preferences. This intentionally displays saved links in app's own UI only.

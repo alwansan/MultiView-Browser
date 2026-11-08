@@ -75,5 +75,13 @@ assert 'void showRecovery()' in source and 'new Pane(current,desktop,false)' in 
 assert 'SessionKeepAliveService.class' in source
 assert 'android:foregroundServiceType="specialUse"' in manifest
 assert 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE' in manifest
-assert 'pauseTimers()' not in source.split('private void configureWeb()',1)[0]
+assert 'web.pauseTimers();' not in source and 'WebView.pauseTimers();' not in source
 print('Background session retention guards passed.')
+
+# Link chooser is a top-level action and is backed by local history / bookmarks.
+assert 'navButton("⇄ "+t(R.string.links_short),this::showUrlDistribution' in source
+assert 'drawLinkPicker(sections,input,dialog)' in source
+assert 'linkOption(into,input,dialog' in source
+assert 'savedBatches' in source and 'saveLinkSet(String text)' in source
+assert 'openUrlBatch(String value)' in source
+print('Link shortcut and history/bookmark picker guards passed.')

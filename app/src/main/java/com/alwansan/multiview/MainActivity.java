@@ -554,25 +554,164 @@ public final class MainActivity extends Activity {
         }
     }
     private void showUrlDistribution() {
+        // Main-screen shortcut: editor, saved link groups, bookmarks and history.
+        LinearLayout content=new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(dp(16),dp(8),dp(16),dp(8));
         EditText input=new EditText(this);
-        input.setMinLines(3);input.setMaxLines(7);
+        input.setMinLines(2);
+        input.setMaxLines(6);
         input.setHint(t(R.string.urls_hint));
-        new AlertDialog.Builder(this).setTitle(t(R.string.urls_title)).setView(input)
-            .setPositiveButton(t(R.string.apply),(dialog,which)->{
-                String value=input.getText().toString().trim();
-                if(value.isEmpty()){toast(t(R.string.urls_empty));return;}
-                String[] urls=value.split("\\r?\\n");
-                if(urls.length==1) {
-                    String url=normalize(urls[0]);
-                    for(Pane p:panes)p.web.loadUrl(url);
-                }else{
-                    for(int i=0;i<Math.min(urls.length,panes.size());i++){
-                        if(!urls[i].trim().isEmpty())panes.get(i).web.loadUrl(normalize(urls[i]));
-                    }
+        input.setTextSize(14);
+        input.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        content.addView(input,new LinearLayout.LayoutParams(-1,dp(116)));
+        TextView explanation=new TextView(this);
+        explanation.setText(t(R.string.link_picker_help));
+        explanation.setTextSize(12);
+        explanation.setTextColor(muted());
+        content.addView(explanation,new LinearLayout.LayoutParams(-1,-2));
+
+        ScrollView scroll=new ScrollView(this);
+        LinearLayout sections=new LinearLayout(this);
+        sections.setOrientation(LinearLayout.VERTICAL);
+        sections.setPadding(0,dp(8),0,dp(12));
+        scroll.addView(sections,new ScrollView.LayoutParams(-1,-2));
+        content.addView(scroll,new LinearLayout.LayoutParams(-1,dp(310)));
+        AlertDialog dialog=new AlertDialog.Builder(this)
+            .setTitle(t(R.string.urls_title))
+            .setView(content)
+            .setPositiveButton(t(R.string.open_links),(d,w)->openUrlBatch(input.getText().toString()))
+            .setNeutralButton(t(R.string.save_link_set),(d,w)->saveLinkSet(input.getText().toString()))
+            .setNegativeButton(t(R.string.cancel),null)
+            .create();
+        drawLinkPicker(sections,input,dialog);
+        dialog.show();
+    }
+    private void linkHeading(LinearLayout into,String title){
+        TextView text=new TextView(this);
+        text.setText(title);
+        text.setTextSize(14);
+        text.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+        text.setTextColor(ink());
+        text.setPadding(dp(3),dp(15),0,dp(5));
+        into.addView(text,new LinearLayout.LayoutParams(-1,-2));
+    }
+    private void appendLink(EditText input,String url){
+        String previous=input.getText().toString().trim();
+        input.setText(previous.isEmpty()?url:previous+"\n"+url);
+        input.setSelection(input.length());
+    }
+    private void linkOption(LinearLayout into,EditText input,AlertDialog dialog,String url){
+        if(url==null||url.isEmpty()||!url.startsWith("http"))return;
+        LinearLayout row=new LinearLayout(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(0,dp(2),0,dp(2));
+        into.addView(row,new LinearLayout.LayoutParams(-1,dp(46)));
+        Button open=button(url,()->{
+            input.setText(url);
+            panes.get(active).navigate(url);
+            dialog.dismiss();
+        });
+        open.setTextSize(11);
+        open.setSingleLine(true);
+        open.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
+        open.setContentDescription(t(R.string.open_one)+" "+url);
+        row.addView(open,new LinearLayout.LayoutParams(0,dp(42),1));
+        Button add=button("+",()->appendLink(input,url));
+        add.setContentDescription(t(R.string.append_one)+" "+url);
+        LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(dp(42),dp(42));
+        lp.setMargins(dp(5),0,0,0);
+        row.addView(add,lp);
+    }
+    private void drawLinkPicker(LinearLayout into,EditText input,AlertDialog dialog){
+        JSONArray saved=readArray("savedBatches");
+        if(saved.length()>0){
+            linkHeading(into,t(R.string.saved_link_sets));
+            for(int i=saved.length()-1;i>=Math.max(0,saved.length()-8);i--){
+                JSONObject group=saved.optJSONObject(i);
+                if(group==null)continue;
+                JSONArray urls=group.optJSONArray("urls");
+                if(urls==null||urls.length()==0)continue;
+                StringBuilder lines=new StringBuilder();
+                for(int j=0;j<urls.length();j++){
+                    if(lines.length()>0)lines.append('\n');
+                    lines.append(urls.optString(j));
                 }
-                // Preserve selection and avoid rebuilding the entire layout for every URL.
-                saveSession();
-            }).setNegativeButton(t(R.string.cancel),null).show();
+                String joined=lines.toString();
+                LinearLayout row=new LinearLayout(this);
+                into.addView(row,new LinearLayout.LayoutParams(-1,dp(46)));
+                Button load=button(t(R.string.open_saved_set)+" ("+urls.length()+")",()->{
+                    input.setText(joined);
+                    openUrlBatch(joined);
+                    dialog.dismiss();
+                });
+                row.addView(load,new LinearLayout.LayoutParams(0,dp(42),1));
+                Button paste=button(t(R.string.paste_set),()->input.setText(joined));
+                LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(dp(95),dp(42));
+                lp.setMargins(dp(5),0,0,0);
+                row.addView(paste,lp);
+            }
+        }
+        JSONArray favorites=readArray("bookmarks");
+        if(favorites.length()>0){
+            linkHeading(into,t(R.string.bookmarks));
+            for(int i=favorites.length()-1;i>=Math.max(0,favorites.length()-8);i--)
+                linkOption(into,input,dialog,favorites.optString(i));
+        }
+        JSONArray history=readArray("history");
+        if(history.length()>0){
+            linkHeading(into,t(R.string.history));
+            java.util.HashSet<String> visited=new java.util.HashSet<>();
+            int shown=0;
+            for(int i=history.length()-1;i>=0 && shown<10;i--){
+                String url=history.optString(i);
+                if(url.startsWith("http")&&visited.add(url)){
+                    linkOption(into,input,dialog,url);
+                    shown++;
+                }
+            }
+        }
+        if(into.getChildCount()==0)linkHeading(into,t(R.string.no_saved_links));
+    }
+    private void openUrlBatch(String value){
+        String[] raw=value.trim().split("\\r?\\n");
+        java.util.ArrayList<String> urls=new java.util.ArrayList<>();
+        for(String line:raw){
+            String trimmed=line.trim();
+            if(!trimmed.isEmpty()&&urls.size()<MAX_PANES)urls.add(normalize(trimmed));
+        }
+        if(urls.isEmpty()){toast(t(R.string.urls_empty));return;}
+        if(urls.size()==1){
+            for(Pane p:panes)p.web.loadUrl(urls.get(0));
+        }else{
+            if(panes.size()<urls.size())resizePanes(urls.size());
+            for(int i=0;i<Math.min(urls.size(),panes.size());i++)
+                panes.get(i).web.loadUrl(urls.get(i));
+        }
+        saveSession();
+    }
+    private void saveLinkSet(String text){
+        String[] lines=text.trim().split("\\r?\\n");
+        JSONArray items=new JSONArray();
+        for(String line:lines){
+            if(!line.trim().isEmpty()&&items.length()<MAX_PANES)
+                items.put(normalize(line.trim()));
+        }
+        if(items.length()==0){toast(t(R.string.urls_empty));return;}
+        JSONArray old=readArray("savedBatches");
+        JSONArray capped=new JSONArray();
+        for(int i=Math.max(0,old.length()-11);i<old.length();i++){
+            JSONObject group=old.optJSONObject(i);
+            if(group!=null)capped.put(group);
+        }
+        try{
+            JSONObject group=new JSONObject();
+            group.put("urls",items);
+            group.put("savedAt",System.currentTimeMillis());
+            capped.put(group);
+            getPreferences(0).edit().putString("savedBatches",capped.toString()).apply();
+            toast(t(R.string.link_set_saved));
+        }catch(org.json.JSONException e){toast(t(R.string.urls_empty));}
     }
     private void showBookmarks() {
         JSONArray arr=readArray("bookmarks");

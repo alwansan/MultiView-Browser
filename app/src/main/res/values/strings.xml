@@ -119,4 +119,13 @@
     <string name="renderer_lost_count">Renderer resets this session</string>
     <string name="renderer_recover_prompt">A web renderer stopped. Tap the affected page to restore it.</string>
     <string name="recovery_tap">Page paused after Android reclaimed its renderer. Tap here to reload this page only.</string>
+    <string name="link_picker_help">Tap a saved URL to open it in the active page; tap + to add it to the editor. Multiple lines open across views.</string>
+    <string name="save_link_set">Save list</string>
+    <string name="saved_link_sets">Saved link lists</string>
+    <string name="open_saved_set">Open list</string>
+    <string name="paste_set">Paste</string>
+    <string name="open_one">Open URL</string>
+    <string name="append_one">Add URL</string>
+    <string name="no_saved_links">Your saved links and history will appear here</string>
+    <string name="link_set_saved">Link list saved</string>
 </resources>
