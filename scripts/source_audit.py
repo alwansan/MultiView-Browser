@@ -59,3 +59,9 @@ ar_names={x.attrib.get('name') for x in ar}
 assert en_names==ar_names and len(en_names)>=60
 assert (root/'app/src/main/res/xml/locale_config.xml').exists()
 print('Localization, zoom and appearance checks passed.')
+
+# Document search control must work without reloading WebView.
+assert 'web.findAllAsync(findQuery)' in source
+assert 'web.findNext(true)' in source and 'web.clearMatches()' in source
+assert 'web.scrollTo(0,0)' in source
+print('In-page find/navigation guards passed.')

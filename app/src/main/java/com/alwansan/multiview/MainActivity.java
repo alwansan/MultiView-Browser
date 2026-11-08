@@ -199,7 +199,7 @@ public final class MainActivity extends Activity {
         topBar.addView(count,countLp);
         Button plus=button("+", () -> {
             if(panes.size()<MAX_PANES) addPane("about:blank");
-            else toast("Maximum 20 pages");
+            else toast(t(R.string.max_views));
         });
         plus.setContentDescription("New view");
         topBar.addView(plus,new LinearLayout.LayoutParams(dp(39),dp(41)));
@@ -382,13 +382,13 @@ public final class MainActivity extends Activity {
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setText(Integer.toString(panes.size()));
         new AlertDialog.Builder(this).setTitle(t(R.string.number_of_views)).setView(input)
-            .setPositiveButton("Apply", (d,w) -> {
+            .setPositiveButton(t(R.string.apply), (d,w) -> {
                 try {
                     int n=Integer.parseInt(input.getText().toString());
                     n=Math.max(1,Math.min(MAX_PANES,n));
                     resizePanes(n);
-                } catch(NumberFormatException ex) { toast("Enter a number from 1 to 20"); }
-            }).setNegativeButton("Cancel",null).show();
+                } catch(NumberFormatException ex) { toast(t(R.string.count_input)); }
+            }).setNegativeButton(t(R.string.cancel),null).show();
     }
     private void addPane(String url) {addPane(url,false);}
     private void addPane(String url,boolean desktop) {
@@ -507,11 +507,11 @@ public final class MainActivity extends Activity {
     private void showUrlDistribution() {
         EditText input=new EditText(this);
         input.setMinLines(3);input.setMaxLines(7);
-        input.setHint("Paste one URL per line, or one URL to open in all views");
-        new AlertDialog.Builder(this).setTitle("Open links across views").setView(input)
-            .setPositiveButton("Apply",(dialog,which)->{
+        input.setHint(t(R.string.urls_hint));
+        new AlertDialog.Builder(this).setTitle(t(R.string.urls_title)).setView(input)
+            .setPositiveButton(t(R.string.apply),(dialog,which)->{
                 String value=input.getText().toString().trim();
-                if(value.isEmpty()){toast("Enter at least one URL");return;}
+                if(value.isEmpty()){toast(t(R.string.urls_empty));return;}
                 String[] urls=value.split("\\r?\\n");
                 if(urls.length==1) {
                     String url=normalize(urls[0]);
@@ -523,31 +523,31 @@ public final class MainActivity extends Activity {
                 }
                 // Preserve selection and avoid rebuilding the entire layout for every URL.
                 saveSession();
-            }).setNegativeButton("Cancel",null).show();
+            }).setNegativeButton(t(R.string.cancel),null).show();
     }
     private void showBookmarks() {
         JSONArray arr=readArray("bookmarks");
         String[] items=new String[arr.length()];
         for(int i=0;i<items.length;i++) items[i]=arr.optString(i);
-        new AlertDialog.Builder(this).setTitle("Bookmarks").setItems(items,(d,w)->panes.get(active).navigate(items[w]))
-            .setPositiveButton("Save current", (d,w) -> bookmark(panes.get(active).web.getUrl()))
-            .setNegativeButton("Close",null).show();
+        new AlertDialog.Builder(this).setTitle(t(R.string.bookmarks_title)).setItems(items,(d,w)->panes.get(active).navigate(items[w]))
+            .setPositiveButton(t(R.string.save_current), (d,w) -> bookmark(panes.get(active).web.getUrl()))
+            .setNegativeButton(t(R.string.close),null).show();
     }
     private void bookmark(String url) {
         if(url==null||!url.startsWith("http")) return;
         JSONArray old=readArray("bookmarks");
-        for(int i=0;i<old.length();i++) if(url.equals(old.optString(i))) {toast("Already bookmarked");return;}
+        for(int i=0;i<old.length();i++) if(url.equals(old.optString(i))) {toast(t(R.string.already_bookmarked));return;}
         old.put(url);
         getPreferences(0).edit().putString("bookmarks",old.toString()).apply();
-        toast("Saved");
+        toast(t(R.string.saved_to_bookmarks));
     }
     private void showHistory() {
         JSONArray arr=readArray("history");
         int n=Math.min(arr.length(),50);
         String[] items=new String[n];
         for(int i=0;i<n;i++) items[i]=arr.optString(arr.length()-1-i);
-        new AlertDialog.Builder(this).setTitle("Recent pages").setItems(items,(d,w)->panes.get(active).navigate(items[w]))
-            .setPositiveButton("Close",null).show();
+        new AlertDialog.Builder(this).setTitle(t(R.string.recent_pages)).setItems(items,(d,w)->panes.get(active).navigate(items[w]))
+            .setPositiveButton(t(R.string.close),null).show();
     }
     private void recordHistory(String url) {
         if(url==null||!url.startsWith("http"))return;
@@ -657,10 +657,10 @@ public final class MainActivity extends Activity {
         if(fileCallback!=null)fileCallback.onReceiveValue(null);
         fileCallback=callback;
         try { startActivityForResult(params.createIntent(),FILE_REQUEST); }
-        catch(Exception e){fileCallback.onReceiveValue(null);fileCallback=null;toast("No file picker available");}
+        catch(Exception e){fileCallback.onReceiveValue(null);fileCallback=null;toast(t(R.string.no_picker));}
     }
     private void download(String url, String disposition, String mime, String userAgent) {
-        if(url==null || !(url.startsWith("https://")||url.startsWith("http://"))) {toast("Unsupported download link");return;}
+        if(url==null || !(url.startsWith("https://")||url.startsWith("http://"))) {toast(t(R.string.download_unsupported));return;}
         try {
             DownloadManager.Request req=new DownloadManager.Request(Uri.parse(url));
             req.setTitle(URLUtil.guessFileName(url,disposition,mime));
@@ -671,12 +671,12 @@ public final class MainActivity extends Activity {
             req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
             req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,URLUtil.guessFileName(url,disposition,mime));
             ((DownloadManager)getSystemService(DOWNLOAD_SERVICE)).enqueue(req);
-            toast("Download started");
-        }catch(Exception e){toast("Download error: "+e.getClass().getSimpleName());}
+            toast(t(R.string.download_started));
+        }catch(Exception e){toast(t(R.string.download_error)+": "+e.getClass().getSimpleName());}
     }
     private void screenshot(Pane pane) {
         int w=pane.web.getWidth(),h=pane.web.getHeight();
-        if(w<=0||h<=0){toast("View not ready");return;}
+        if(w<=0||h<=0){toast(t(R.string.view_not_ready));return;}
         try {
             Bitmap bitmap=Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);
             pane.web.draw(new Canvas(bitmap));
@@ -698,9 +698,9 @@ public final class MainActivity extends Activity {
                 }
             }
             bitmap.recycle();
-            toast("Screenshot saved");
-        }catch(Exception e){toast("Capture failed: "+e.getClass().getSimpleName());}
-        catch(OutOfMemoryError e){toast("Not enough memory for screenshot");}
+            toast(t(R.string.screenshot_saved));
+        }catch(Exception e){toast(t(R.string.capture_failed)+": "+e.getClass().getSimpleName());}
+        catch(OutOfMemoryError e){toast(t(R.string.screenshot_oom));}
     }
     private final class Pane {
         final String initialUrl;
@@ -711,7 +711,8 @@ public final class MainActivity extends Activity {
         final TextView number;
         ProgressBar loading;
         LinearLayout toolsRow;
-        String pageTitle="New view";
+        String pageTitle="";
+        String findQuery="";
         boolean desktop=false;
         boolean headerBuilt=false;
         int zoomPct=defaultZoom;
@@ -762,8 +763,8 @@ public final class MainActivity extends Activity {
                     if("mailto".equalsIgnoreCase(scheme)||"tel".equalsIgnoreCase(scheme)||
                        "sms".equalsIgnoreCase(scheme)){
                         try{startActivity(new Intent(Intent.ACTION_VIEW,uri));}
-                        catch(Exception e){toast("No app for link");}
-                    }else toast("Unsupported external link blocked");
+                        catch(Exception e){toast(t(R.string.no_app_for_link));}
+                    }else toast(t(R.string.scheme_blocked));
                     return true;
                 }
                 @Override public void onPageStarted(WebView view,String url,android.graphics.Bitmap favicon) {
@@ -777,7 +778,7 @@ public final class MainActivity extends Activity {
                     saveSession();
                 }
                 @Override public boolean onRenderProcessGone(WebView view, android.webkit.RenderProcessGoneDetail detail) {
-                    toast("Web renderer was reclaimed — restoring page");
+                    toast(t(R.string.renderer_restored));
                     // A killed renderer cannot be reused. Replace only this pane, never
                     // destroy unrelated live panes. Deferred until the next build.
                     int index=panes.indexOf(Pane.this);
@@ -811,7 +812,7 @@ public final class MainActivity extends Activity {
                     WebView.WebViewTransport transport=(WebView.WebViewTransport)resultMsg.obj;
                     transport.setWebView(popup.web);
                     resultMsg.sendToTarget();
-                    toast("Opened view "+panes.size());
+                    toast(t(R.string.popup_opened)+" "+panes.size());
                     return true;
                 }
                 @Override public void onProgressChanged(WebView view,int progress) {
@@ -930,6 +931,29 @@ public final class MainActivity extends Activity {
             }
         }
         void navigate(String text){web.loadUrl(normalize(text));setActive(this);saveSession();}
+        void showFindDialog(){
+            EditText input=new EditText(MainActivity.this);
+            input.setSingleLine(true);
+            input.setHint(t(R.string.find_hint));
+            input.setText(findQuery);
+            new AlertDialog.Builder(MainActivity.this).setTitle(t(R.string.zoom_find))
+                .setView(input)
+                .setPositiveButton(t(R.string.find),(dialog,which)->{
+                    findQuery=input.getText().toString().trim();
+                    if(findQuery.isEmpty()){
+                        web.clearMatches();
+                    }else{
+                        web.findAllAsync(findQuery);
+                    }
+                })
+                .setNeutralButton(t(R.string.find_next),(dialog,which)->{
+                    if(findQuery.isEmpty())toast(t(R.string.no_search));
+                    else web.findNext(true);
+                })
+                .setNegativeButton(t(R.string.clear_matches),(dialog,which)->{
+                    findQuery="";web.clearMatches();
+                }).show();
+        }
         void paneMenu(){
             setActive(this);
             String[] options={
@@ -946,6 +970,10 @@ public final class MainActivity extends Activity {
                 t(R.string.zoom_out),
                 t(R.string.move_before),
                 t(R.string.move_after),
+                t(R.string.zoom_find),
+                t(R.string.find_next),
+                t(R.string.clear_matches),
+                t(R.string.scroll_top),
                 t(R.string.close_view)
             };
             new AlertDialog.Builder(MainActivity.this)
@@ -998,7 +1026,14 @@ public final class MainActivity extends Activity {
                             applyAppearance();saveSession();break;
                         case 11:movePane(this,-1);break;
                         case 12:movePane(this,1);break;
-                        case 13:removePane(panes.indexOf(this));break;
+                        case 13:showFindDialog();break;
+                        case 14:
+                            if(findQuery.isEmpty())showFindDialog();
+                            else web.findNext(true);
+                            break;
+                        case 15:findQuery="";web.clearMatches();break;
+                        case 16:web.scrollTo(0,0);break;
+                        case 17:removePane(panes.indexOf(this));break;
                     }
                 }).show();
         }

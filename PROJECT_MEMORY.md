@@ -104,3 +104,9 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Reload all is a persistent toolbar action requiring explicit confirmation. Never automatically reload ongoing conversations.
 - User confirmation v0.2.2 runtime good does not constitute v0.3 runtime verification.
 - Source docs: https://developer.android.com/guide/topics/resources/app-languages ; https://developer.android.com/reference/android/webkit/WebSettings#setAlgorithmicDarkeningAllowed(boolean)
+
+## v0.3.1 additional practical improvements
+- Upgraded Arabic/English coverage for dialogs, downloads, bookmarks, errors and screenshot notices.
+- Added WebView built-in per-pane findAllAsync, findNext, clearMatches, plus scroll-to-top control. This does not reload pages. Search within embedded content may vary per site.
+- Existing v0.3.0 build SUCCESS: 42503641714; v0.3.1 CI pending.
+- Official docs: https://developer.android.com/reference/android/webkit/WebView#findAllAsync(java.lang.String)

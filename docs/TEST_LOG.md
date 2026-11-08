@@ -47,3 +47,9 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED, CI awaiting verification] Experimental opt-in dark websites per pane + globally; saved/restore on next launch, can toggle off.
 - [IMPLEMENTED, CI awaiting verification] Copy all page URLs to clipboard.
 - [PENDING] Device UI, Chrome/ChatGPT CSS zoom behavior and dark-site accuracy, language-switch persistence and multi-pane reload safety.
+
+## 2026-11-08 — v0.3.1 localization polish and page search
+- [PASS] v0.3.0 Actions 42503641714 succeeded; CSS zoom/dark unit tests, string consistency, Android compile, APK + Release published. Physical Android UI not yet checked.
+- [IMPLEMENTED] Additional Arabic localization: bookmarks, page history, downloads, screenshots and error notices.
+- [IMPLEMENTED] Per-pane Find in page, Next match, Clear highlights, Scroll to top via WebView native APIs.
+- [PENDING] New v0.3.1 build+Release verification and owner testing.
