@@ -1,76 +1,70 @@
-# MultiView Browser
+<p align="center"><img src="assets/brand/icon.svg" alt="MultiView Browser logo" width="116"></p>
+<h1 align="center">MultiView Browser</h1>
+<p align="center"><strong>One Android browser. Multiple pages, side by side.</strong></p>
+<p align="center"><a href="README.md">🇬🇧 English</a> &nbsp;|&nbsp; <a href="README.ar.md">🇮🇶 العربية</a></p>
+<p align="center">
+<a href="https://github.com/alwansan/MultiView-Browser/actions/workflows/android.yml"><img alt="Android CI" src="https://img.shields.io/github/actions/workflow/status/alwansan/MultiView-Browser/android.yml?branch=main&amp;label=Android%20CI"></a>
+<a href="https://github.com/alwansan/MultiView-Browser/releases/tag/preview-latest"><img alt="Preview" src="https://img.shields.io/badge/release-experimental-4e90ff"></a>
+<img alt="Languages" src="https://img.shields.io/badge/languages-Arabic%20%7C%20English-14b8a6">
+<img alt="Android minimum" src="https://img.shields.io/badge/Android-8.0%2B-3ddc84">
+</p>
+<p align="center"><img src="assets/brand/hero-en.svg" alt="Illustration of MultiView Browser displaying four different pages" width="100%"></p>
 
-A native Android multi-pane browser rebuilt from independently written source for the MultiView-Browser project.
+> **Preview • 0.4.x series.** Built with Android WebView and tested by CI. Some features still require real-device verification. The artwork on this page is **concept art, not screenshots of a tested build**.
 
-## Goals
+## Get the app
 
-- Display 1–20 independently navigable websites inside one Activity.
-- Switch between Grid, Vertical Stack, Horizontal Strip, and Single Focus without destroying or recreating WebViews.
-- Save page URLs, layouts and favorites; support per-pane back, forward, reload, desktop mode and screenshots.
-- Keep browser chrome small and usable on phones and tablets, including Android 15 system bars.
-- Ship a GitHub Actions-built debug APK.
+[**Download experimental APK**](https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk) · [**Releases**](https://github.com/alwansan/MultiView-Browser/releases/tag/preview-latest) · [**Build history**](https://github.com/alwansan/MultiView-Browser/actions/workflows/android.yml)
 
-**Experimental APK (direct download):** https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk
+This rolling preview is a developer build. If Android rejects an update due to a different debug signing certificate, export important URLs before uninstalling. [Set up a stable signing key (Arabic)](docs/SIGNING_SETUP_AR.md).
 
-**GitHub Release:** https://github.com/alwansan/MultiView-Browser/releases/tag/preview-latest
+## Explore the browser
 
-**Status:** v0.2.2 experimental (CI build tested; physical Android runtime still requires confirmation): Fit Grid, Scroll Grid, Vertical, Horizontal and Focus; loading indicators, browser popups, per-pane Desktop flags, quick ChatGPT link, saved library, pane duplication and zoom controls. Compilation, device compatibility and behavioral parity are tested in stages; do not confuse repository commit with a proven working APK. Android can still reclaim WebView renderer memory.
+<p align="center"><img src="assets/brand/features.svg" alt="Illustrated summary of MultiView Browser features" width="100%"></p>
 
-### Building
+- **1–20 WebViews** within a single Android activity, each with its own URL, navigation and controls.
+- **Layouts:** Fit Grid, Scroll Grid, Vertical Stack, Horizontal Strip and Single Focus.
+- **Page zoom:** 10%–200% in 10% increments; apply to one pane or save and apply to all.
+- **Link workspace:** paste multiple URLs, reuse saved link lists, browse bookmarks and history.
+- **Arabic + English interface,** plus optional experimental darkening for website content.
+- **Session resilience:** restore URLs and settings, defer loading of offscreen panes on cold startup, and opt into a visible ongoing background service.
+- **Browser utilities:** downloads, file chooser, screenshots, desktop user-agent, in-page search and manual reload-all.
+
+### Choose a layout
+
+<p align="center"><img src="assets/brand/layouts.svg" alt="Grid, Vertical and Focus layout concept" width="100%"></p>
+
+*Illustrations are for communicating the concept. For actual UI verification, use the APK and [device test guide](docs/DEVICE_TEST_AR.md).*
+
+## Important limits
+
+Android can terminate an app or its WebView renderers when memory is constrained. **No ordinary Android application can promise that 20 live pages will never be reloaded.** The opt-in foreground service can improve process importance but cannot make the app immortal. A killed JavaScript context, unsent web form or in-memory page state may not be recoverable. The website-dark option is experimental; normal panes share the WebView cookie profile.
+
+## Build from source
 
 Requires JDK 17, Android SDK Platform 35 and Gradle 8.10.2:
 
-```bash
-gradle :app:assembleDebug
+```sh
+gradle --no-daemon :app:assembleDebug
 ```
 
-The push-triggered workflow uploads `app-debug.apk` as a build artifact.
+CI builds and publishes the preview APK from `main` via [Android workflow](.github/workflows/android.yml). A stable release signing key must be held privately using GitHub Actions secrets; never commit a keystore.
 
-### Documents
+## Project documents
 
-- [Master plan (Arabic)](docs/PLAN_AR.md)
-- [Original APK static inspection](docs/ORIGINAL_APK_ANALYSIS.md)
-- [Working memory](PROJECT_MEMORY.md)
-- [Agent instructions](AGENTS.md)
-- [Copyable restoration prompt (Arabic)](RESTORE_AR.md)
+| Topic | Documentation |
+|---|---|
+| Project roadmap | [Plan (Arabic)](docs/PLAN_AR.md) |
+| Testing | [Device checklist](docs/DEVICE_TEST_AR.md) · [Test log](docs/TEST_LOG.md) |
+| Background stability | [Background reliability (Arabic)](docs/BACKGROUND_RELIABILITY_AR.md) |
+| Signing | [Safe signing setup](docs/SIGNING_SETUP_AR.md) |
+| Engineering continuity | [Memory](PROJECT_MEMORY.md) · [Agent guide](AGENTS.md) · [Restoration prompt](RESTORE_AR.md) |
+| Design assets | [Brand assets](assets/brand/README.md) |
 
-The original commercial APK and licensed assets are intentionally **not** stored in this repository. This app does not affiliate with third-party websites.
+## Independence and privacy
 
-## On-device testing
+MultiView Browser is independently implemented; it is not affiliated with third-party websites or the reference browser. Proprietary APK content is **not** included. Do not publish login credentials, cookies, private URLs or personal chat content in issues or logs.
 
-See [Arabic device checklist](docs/DEVICE_TEST_AR.md). Start with five pages in Fit Grid and verify focus/navigation, real ChatGPT typing, file chooser and rotation. **No account credentials, auth cookies or personal chat text should be uploaded to GitHub.**
+---
 
-Current verified preview: https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk — SHA256 `878d14ba0d101aadfab70e9949c248db95d0b2348865acc4d3134cc57cbafe87`.
-
-## Version 0.3.0 — page appearance and localization
-
-- Zoom each page from **10% to 200%**, in 10% steps; save the default and apply it to all pages.
-- Direct **Reload All** button with confirmation to protect unsent work.
-- Arabic and English strings, RTL app UI and language setting.
-- **Experimental** opt-in dark content per page or across all pages. Some sites will render imperfectly; turn it off for pages with native dark themes.
-- Copy all current page addresses at once.
-- Uses the existing WebViews when changing appearance; it does not intentionally reload for zoom or dark toggle.
-
-## Direct Android download — v0.3.1 preview
-
-[Download the latest app-debug.apk](https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk)
-
-SHA256: `3f3d55ec7682b2074a6ed168e957e66bbad7d4c21df9fa734d0e3bdb982e496d`
-
-Includes: 10–200% adjustable page content zoom in 10% steps, per-pane/apply-all/save-default, dedicated Reload All, Arabic and English UI, experimental site darkening, in-page search, copy-all URLs. Zoom and dark injection are site-dependent; Android may still reclaim WebView rendering processes. GitHub Actions compilation was successful; phone verification is pending.
-
-## Preserve data across APK updates
-
-Each ephemeral CI debug certificate may differ, requiring an uninstall. For optional consistent APK signatures and retained app data across future updates, see [Arabic stable-signing setup](docs/SIGNING_SETUP_AR.md). The owner's private keystore **must not be committed**.
-
-## v0.4.0 — keep sessions resilient
-
-[Download v0.4.0 preview APK](https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk)
-
-**Main upgrades:** opt-in foreground session notification (in More), minimize instead of Activity finish, bounded active WebView navigation-history restoration, deferred loading of offscreen tabs on cold restart, manual recovery when a renderer dies, and direct Links shortcut with saved link lists + bookmarks + history.
-
-**It is not possible to guarantee that Android will never kill a WebView or reload a page.** The current APK compiles in CI; run-time behavior on Android 15 should be tested on device.
-
-- [Arabic background reliability & link picker guide](docs/BACKGROUND_RELIABILITY_AR.md)
-- [Stable signing instructions](docs/SIGNING_SETUP_AR.md)
-- SHA256 of the current verified APK: `6788d8aec8e91a23ceee72a44fbd0d541f2cdb3e48150ff252170b74f011ef24`
+<p align="center"><a href="README.ar.md">اقرأ هذه الصفحة بالعربية</a> · Made for focused multi-page browsing.</p>

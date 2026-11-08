@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="620" viewBox="0 0 1440 620" role="img" aria-label="MultiView Browser illustrated promotional banner; not an application screenshot">
+<defs>
+<linearGradient id="b" x2="1" y2="1"><stop stop-color="#071225"/><stop offset=".56" stop-color="#0a2f5b"/><stop offset="1" stop-color="#0954ad"/></linearGradient>
+<linearGradient id="neon" x2="1" y2="1"><stop stop-color="#39e5ef"/><stop offset="1" stop-color="#4e90ff"/></linearGradient>
+<linearGradient id="card" x2="1" y2="1"><stop stop-color="#17446d"/><stop offset="1" stop-color="#0a1c38"/></linearGradient>
+<filter id="g"><feGaussianBlur stdDeviation="12"/></filter>
+</defs>
+<rect width="1440" height="620" rx="30" fill="url(#b)"/>
+<circle cx="1250" cy="255" r="300" fill="none" stroke="#26bfff" stroke-opacity=".22" stroke-width="12"/><ellipse cx="1250" cy="255" rx="155" ry="300" fill="none" stroke="#26bfff" stroke-opacity=".20" stroke-width="8"/><path d="M975 255H1440M1040 110H1440M1030 405H1440" stroke="#26bfff" stroke-opacity=".17" stroke-width="8"/>
+<path d="M0 576Q375 515 830 592T1440 515" stroke="#37d6f5" stroke-width="13" opacity=".74" fill="none" filter="url(#g)"/>
+<path d="M0 573Q375 512 830 589T1440 512" stroke="#41dff4" stroke-width="4" opacity=".9" fill="none"/>
+<g transform="translate(70 63)">
+ <rect width="108" height="108" rx="27" fill="#0b2854" stroke="#27dffa" stroke-width="3"/>
+ <rect x="17" y="19" width="33" height="31" rx="6" fill="#194c87" stroke="#3af4f0" stroke-width="2"/><rect x="57" y="19" width="33" height="31" rx="6" fill="#194c87" stroke="#86b8fa" stroke-width="2"/><rect x="17" y="59" width="33" height="31" rx="6" fill="#194c87" stroke="#86b8fa" stroke-width="2"/><rect x="57" y="59" width="33" height="31" rx="6" fill="#194c87" stroke="#86b8fa" stroke-width="2"/>
+ <path d="M20 43l9-11 12 11" stroke="#4af3ef" stroke-width="4" fill="none"/><path d="M68 28l12 7-12 7" fill="#d9fbff"/><circle cx="75" cy="74" r="9" stroke="#b2f8ff" stroke-width="2" fill="none"/>
+</g>
+<text x="210" y="135" fill="#ffffff" font-family="Arial,DejaVu Sans,sans-serif" font-weight="800" font-size="68" >MultiView Browser</text>
+<text x="78" y="204" fill="#66edf4" font-size="31" font-family="Arial,DejaVu Sans,sans-serif">Many pages. One powerful workspace.</text>
+<rect x="77" y="234" width="575" height="3" rx="2" fill="url(#neon)"/>
+<g><rect x="79" y="284" width="277" height="63" rx="21" fill="#0b2646" stroke="#248fc0" stroke-width="2"/><circle cx="110" cy="315" r="13" fill="#36dee9" opacity=".8"/><text x="136" y="323" fill="#f0faff" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="600">Up to 20 live panes</text></g>
+<g><rect x="379" y="284" width="277" height="63" rx="21" fill="#0b2646" stroke="#248fc0" stroke-width="2"/><circle cx="410" cy="315" r="13" fill="#36dee9" opacity=".8"/><text x="436" y="323" fill="#f0faff" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="600">Flexible layouts</text></g>
+<g><rect x="79" y="369" width="277" height="63" rx="21" fill="#0b2646" stroke="#248fc0" stroke-width="2"/><circle cx="110" cy="400" r="13" fill="#36dee9" opacity=".8"/><text x="136" y="408" fill="#f0faff" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="600">Arabic + English</text></g>
+<g><rect x="379" y="369" width="277" height="63" rx="21" fill="#0b2646" stroke="#248fc0" stroke-width="2"/><circle cx="410" cy="400" r="13" fill="#36dee9" opacity=".8"/><text x="436" y="408" fill="#f0faff" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="600">Zoom 10–200%</text></g>
+<text x="80" y="536" font-family="Arial,DejaVu Sans,sans-serif" font-size="18" fill="#bbcee9">Android WebView · Open source · Illustrated concept</text>
+<g transform="translate(835 56)">
+ <rect x="-18" y="0" width="367" height="540" rx="52" fill="#020b1a" stroke="#a6daff" stroke-width="9"/>
+ <rect x="1" y="20" width="329" height="497" rx="37" fill="#0b192e"/>
+ <rect x="116" y="21" width="100" height="17" rx="9" fill="#020916"/>
+ <text x="21" y="65" font-family="Arial,sans-serif" font-size="18" font-weight="bold" fill="#f2fbff">MultiView</text>
+ <text x="264" y="65" font-size="18" fill="#42eeef">⊞  +</text>
+ <g>
+  <rect x="18" y="83" width="141" height="181" rx="15" fill="url(#card)" stroke="#45f9f4" stroke-width="3.5"/>
+  <rect x="24" y="91" width="129" height="26" rx="8" fill="#09213c"/>
+  <circle cx="36" cy="104" r="4" fill="#56f1ee"/>
+  <text x="47" y="108" font-size="12" fill="#e5f3ff" font-family="Arial,sans-serif">News</text>
+  <rect x="28" y="127" width="121" height="78" rx="9" fill="#0879ad"/><path d="M28 205l33-35 21 16 34-38 33 57" fill="#8cf2fd"/><circle cx="126" cy="142" r="12" fill="#ffcc5d"/>
+  <path d="M32 226h100m-100 17h76" stroke="#8caed7" stroke-width="7" stroke-linecap="round" opacity=".7"/>
+ </g>
+<g>
+  <rect x="175" y="83" width="141" height="181" rx="15" fill="url(#card)" stroke="#527da9" stroke-width="2"/>
+  <rect x="181" y="91" width="129" height="26" rx="8" fill="#09213c"/>
+  <circle cx="193" cy="104" r="4" fill="#ff7474"/>
+  <text x="204" y="108" font-size="12" fill="#e5f3ff" font-family="Arial,sans-serif">Video</text>
+  <rect x="185" y="127" width="121" height="78" rx="9" fill="#1e63a9"/><path d="M232 148l29 19-29 19" fill="#f1f9ff"/>
+  <path d="M189 226h100m-100 17h76" stroke="#8caed7" stroke-width="7" stroke-linecap="round" opacity=".7"/>
+ </g>
+<g>
+  <rect x="18" y="276" width="141" height="181" rx="15" fill="url(#card)" stroke="#527da9" stroke-width="2"/>
+  <rect x="24" y="284" width="129" height="26" rx="8" fill="#09213c"/>
+  <circle cx="36" cy="297" r="4" fill="#ffd56c"/>
+  <text x="47" y="301" font-size="12" fill="#e5f3ff" font-family="Arial,sans-serif">Notes</text>
+  <rect x="30" y="322" width="40" height="66" rx="6" fill="#6587b7"/><path d="M82 331h50m-50 17h50m-50 17h35" stroke="#9bc3f5" stroke-width="6" stroke-linecap="round"/>
+  <path d="M32 419h100m-100 17h76" stroke="#8caed7" stroke-width="7" stroke-linecap="round" opacity=".7"/>
+ </g>
+<g>
+  <rect x="175" y="276" width="141" height="181" rx="15" fill="url(#card)" stroke="#527da9" stroke-width="2"/>
+  <rect x="181" y="284" width="129" height="26" rx="8" fill="#09213c"/>
+  <circle cx="193" cy="297" r="4" fill="#7fb3ff"/>
+  <text x="204" y="301" font-size="12" fill="#e5f3ff" font-family="Arial,sans-serif">Search</text>
+  <rect x="185" y="326" width="121" height="56" rx="28" stroke="#8dbfff" stroke-width="3" fill="#132a53"/><circle cx="283" cy="354" r="9" stroke="#64e6f1" stroke-width="4" fill="none"/>
+  <path d="M189 419h100m-100 17h76" stroke="#8caed7" stroke-width="7" stroke-linecap="round" opacity=".7"/>
+ </g>
+ <rect x="18" y="475" width="295" height="29" rx="14" fill="#182b4b"/><text x="74" y="494" font-family="Arial,sans-serif" fill="#a9eefd" font-size="17">‹   ›   ↻   ⊞   ⋮</text>
+</g>
+</svg>

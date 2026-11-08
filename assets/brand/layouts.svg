@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1350" height="510" viewBox="0 0 1350 510" role="img" aria-label="Grid, Vertical, and Focus layouts concept illustration">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#071729"/><stop offset="1" stop-color="#13467d"/></linearGradient></defs>
+<rect width="1350" height="510" rx="30" fill="url(#bg)"/>
+<text x="61" y="61" font-family="Arial,sans-serif" font-size="33" fill="#eefaff" font-weight="800">Choose your workspace</text>
+<text x="61" y="92" font-family="Arial,sans-serif" font-size="18" fill="#a9cee9">Switch arrangements without intentionally reloading the live WebViews.</text>
+<g transform="translate(63 118)">
+<rect width="371" height="346" rx="23" fill="#0a1d36" stroke="#2c85bc" stroke-width="2"/>
+<rect x="13" y="12" width="345" height="45" rx="12" fill="#173553"/>
+<text x="32" y="42" font-family="Arial,sans-serif" font-size="20" font-weight="700" fill="#effbff">Grid</text>
+<text x="317" y="42" fill="#52ebf0" font-size="21">⊞</text>
+<rect x="16" y="75" width="164" height="119" rx="12" fill="#154978" stroke="#35eeef" stroke-width="3"/>
+<rect x="28" y="90" width="89" height="7" rx="3.5" fill="#8abedd" opacity=".84"/>
+<rect x="28" y="110" width="118" height="7" rx="3.5" fill="#7eace1" opacity=".58"/><rect x="189" y="75" width="164" height="119" rx="12" fill="#153b65" stroke="#759ac4" stroke-width="2"/>
+<rect x="201" y="90" width="89" height="7" rx="3.5" fill="#8abedd" opacity=".84"/>
+<rect x="201" y="110" width="118" height="7" rx="3.5" fill="#7eace1" opacity=".58"/><rect x="16" y="205" width="164" height="119" rx="12" fill="#173b57" stroke="#759ac4" stroke-width="2"/>
+<rect x="28" y="220" width="89" height="7" rx="3.5" fill="#8abedd" opacity=".84"/>
+<rect x="28" y="240" width="118" height="7" rx="3.5" fill="#7eace1" opacity=".58"/><rect x="189" y="205" width="164" height="119" rx="12" fill="#194a80" stroke="#759ac4" stroke-width="2"/>
+<rect x="201" y="220" width="89" height="7" rx="3.5" fill="#8abedd" opacity=".84"/>
+<rect x="201" y="240" width="118" height="7" rx="3.5" fill="#7eace1" opacity=".58"/>
+</g>
+<g transform="translate(500 118)">
+<rect width="371" height="346" rx="23" fill="#0a1d36" stroke="#2c85bc" stroke-width="2"/>
+<rect x="13" y="12" width="345" height="45" rx="12" fill="#173553"/>
+<text x="32" y="42" font-family="Arial,sans-serif" font-size="20" font-weight="700" fill="#effbff">Vertical</text>
+<text x="317" y="42" fill="#52ebf0" font-size="21">⊞</text>
+<rect x="16" y="75" width="337" height="75" rx="12" fill="#154978" stroke="#35eeef" stroke-width="3"/>
+<rect x="28" y="90" width="182" height="7" rx="3.5" fill="#8abedd" opacity=".84"/>
+<rect x="28" y="110" width="243" height="7" rx="3.5" fill="#7eace1" opacity=".58"/><rect x="16" y="161" width="337" height="75" rx="12" fill="#153b65" stroke="#759ac4" stroke-width="2"/>
+<rect x="28" y="176" width="182" height="7" rx="3.5" fill="#8abedd" opacity=".84"/>
+<rect x="28" y="196" width="243" height="7" rx="3.5" fill="#7eace1" opacity=".58"/><rect x="16" y="247" width="337" height="75" rx="12" fill="#173b57" stroke="#759ac4" stroke-width="2"/>
+<rect x="28" y="262" width="182" height="7" rx="3.5" fill="#8abedd" opacity=".84"/>
+<rect x="28" y="282" width="243" height="7" rx="3.5" fill="#7eace1" opacity=".58"/>
+</g>
+<g transform="translate(937 118)">
+<rect width="371" height="346" rx="23" fill="#0a1d36" stroke="#2c85bc" stroke-width="2"/>
+<rect x="13" y="12" width="345" height="45" rx="12" fill="#173553"/>
+<text x="32" y="42" font-family="Arial,sans-serif" font-size="20" font-weight="700" fill="#effbff">Focus</text>
+<text x="317" y="42" fill="#52ebf0" font-size="21">⊞</text>
+<rect x="16" y="75" width="337" height="249" rx="12" fill="#154978" stroke="#35eeef" stroke-width="3"/>
+<rect x="28" y="90" width="182" height="7" rx="3.5" fill="#8abedd" opacity=".84"/>
+<rect x="28" y="110" width="243" height="7" rx="3.5" fill="#7eace1" opacity=".58"/>
+</g>
+</svg>
