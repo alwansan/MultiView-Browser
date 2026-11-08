@@ -44,6 +44,11 @@ jobs:
           mkdir -p build/appearance-test-classes
           javac -d build/appearance-test-classes app/src/main/java/com/alwansan/multiview/WebAppearance.java scripts/WebAppearanceTest.java
           java -cp build/appearance-test-classes com.alwansan.multiview.WebAppearanceTest
+      - name: Test selective cold-session restoration
+        run: |
+          mkdir -p build/restore-test-classes
+          javac -d build/restore-test-classes app/src/main/java/com/alwansan/multiview/SessionRestorePlan.java scripts/SessionRestorePlanTest.java
+          java -cp build/restore-test-classes com.alwansan.multiview.SessionRestorePlanTest
       - name: Source checks
         run: python3 scripts/source_audit.py
       - name: Assemble debug APK

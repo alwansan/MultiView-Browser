@@ -85,3 +85,8 @@ assert 'linkOption(into,input,dialog' in source
 assert 'savedBatches' in source and 'saveLinkSet(String text)' in source
 assert 'openUrlBatch(String value)' in source
 print('Link shortcut and history/bookmark picker guards passed.')
+
+assert 'SessionRestorePlan.eager' in source
+assert 'if(!autoLoad)pane.showRecovery();' in source
+assert 'pane.recoveryNotice!=null?pane.pendingScrollY:pane.web.getScrollY()' in source
+print('Lazy cold-start restoration guards passed.')

@@ -775,9 +775,11 @@ public final class MainActivity extends Activity {
             if(urls!=null)for(int i=0;i<Math.min(urls.length(),MAX_PANES);i++){
                 String url=urls.optString(i,"about:blank");
                 boolean restoreBackStack=pendingWebHistory!=null && i==pendingWebIndex;
+                boolean autoLoad=SessionRestorePlan.eager(i,active,urls.length(),layoutMode,fitGrid);
                 addPane(url.startsWith("http")||url.equals("about:blank")?url:"about:blank",
-                    flags!=null && flags.optBoolean(i,false),!restoreBackStack);
+                    flags!=null && flags.optBoolean(i,false),autoLoad && !restoreBackStack);
                 Pane pane=panes.get(panes.size()-1);
+                if(!autoLoad)pane.showRecovery();
                 if(restoreBackStack){
                     try{
                         if(pane.web.restoreState(pendingWebHistory)==null)pane.web.loadUrl(url);
@@ -810,8 +812,9 @@ public final class MainActivity extends Activity {
                 desktops.put(pane.desktop);
                 zooms.put(pane.zoomPct);
                 siteDarks.put(pane.websiteDark);
-                scrollXs.put(pane.web.getScrollX());
-                scrollYs.put(pane.web.getScrollY());
+                // Avoid erasing saved scroll position for deferred/unopened tabs.
+                scrollXs.put(pane.recoveryNotice!=null?pane.pendingScrollX:pane.web.getScrollX());
+                scrollYs.put(pane.recoveryNotice!=null?pane.pendingScrollY:pane.web.getScrollY());
             }
             state.put("scrollXs",scrollXs);
             state.put("scrollYs",scrollYs);
@@ -1047,8 +1050,8 @@ public final class MainActivity extends Activity {
                         Pane replacement=new Pane(current,desktop,false);
                         replacement.zoomPct=zoomPct;
                         replacement.websiteDark=websiteDark;
-                        replacement.pendingScrollX=pendingScrollX;
-                        replacement.pendingScrollY=pendingScrollY;
+                        replacement.pendingScrollX=Math.max(pendingScrollX,view.getScrollX());
+                        replacement.pendingScrollY=Math.max(pendingScrollY,view.getScrollY());
                         replacement.showRecovery();
                         panes.set(index,replacement);
                         renderLayout();saveSession();

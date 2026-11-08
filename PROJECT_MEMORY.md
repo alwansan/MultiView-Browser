@@ -134,3 +134,9 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Tap URL opens it in ACTIVE pane and pastes into input. Tap '+' adds URL to multiline editor. For saved list, Open list distributes URLs and Paste only fills editor.
 - Multi-URL distributor grows pane count once if necessary, up to 20 (never silently close existing tabs), then loads one URL per pane. Single URL still loads in all panes.
 - No network for suggestions; all based on local preferences. This intentionally displays saved links in app's own UI only.
+
+## Cold process restart: no 20-tab reload storm
+- Added SessionRestorePlan: from a cold process start, immediately open active pane and only first six potential Fit Grid panes (or first two for other layouts). All other saved pages get tap-to-restore placeholder, preserving URL, zoom, website dark and scroll metadata.
+- This avoids a simultaneous load/refresh of all 20 pages after Android actually kills the app. It cannot recover old JS heap or unsent DOM content.
+- When renderer dies in live process, impacted panes remain manually recoverable, no automatic cross-tab cascade.
+- Unit JVM test covers 5 and 20 page scenarios. CI/device verification pending.

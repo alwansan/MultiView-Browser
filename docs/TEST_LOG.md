@@ -67,3 +67,5 @@ Do not convert PENDING into PASS without run/device evidence.
 - [PENDING] Verify GitHub Actions, Android 15 permission behavior, long chat after 10+ minutes background, battery impact and process death.
 
 - [IMPLEMENTED, CI PENDING] Main-toolbar Links shortcut, multiline editor with bookmark/history rows below, tap-to-open/paste and '+' append, saved multi-URL batches.
+
+- [IMPLEMENTED/CI PENDING] On cold process restart, eager-load visible/active panes only; defer other saved pages to explicit tap-to-restore to avoid mass reloading. Added SessionRestorePlan JVM tests.
