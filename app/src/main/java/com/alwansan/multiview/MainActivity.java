@@ -413,17 +413,24 @@ public final class MainActivity extends Activity {
         }
     }
     private void showUrlDistribution() {
-        final EditText input=new EditText(this);
-        input.setMinLines(3); input.setMaxLines(6);
-        input.setHint("One URL per line, or one URL for all panes");
-        new AlertDialog.Builder(this).setTitle("Distribute URLs").setView(input)
-            .setPositiveButton("Apply", (d,w) -> {
-                String[] urls=input.getText().toString().trim().split("\\s+");
-                if(urls.length==1 && !urls[0].isEmpty()) {
-                    for(Pane p:panes) p.navigate(urls[0]);
-                } else {
-                    for(int i=0;i<panes.size() && i<urls.length;i++) panes.get(i).navigate(urls[i]);
+        EditText input=new EditText(this);
+        input.setMinLines(3);input.setMaxLines(7);
+        input.setHint("Paste one URL per line, or one URL to open in all views");
+        new AlertDialog.Builder(this).setTitle("Open links across views").setView(input)
+            .setPositiveButton("Apply",(dialog,which)->{
+                String value=input.getText().toString().trim();
+                if(value.isEmpty()){toast("Enter at least one URL");return;}
+                String[] urls=value.split("\\r?\\n");
+                if(urls.length==1) {
+                    String url=normalize(urls[0]);
+                    for(Pane p:panes)p.web.loadUrl(url);
+                }else{
+                    for(int i=0;i<Math.min(urls.length,panes.size());i++){
+                        if(!urls[i].trim().isEmpty())panes.get(i).web.loadUrl(normalize(urls[i]));
+                    }
                 }
+                // Preserve selection and avoid rebuilding the entire layout for every URL.
+                saveSession();
             }).setNegativeButton("Cancel",null).show();
     }
     private void showBookmarks() {
@@ -802,27 +809,60 @@ public final class MainActivity extends Activity {
         void navigate(String text){web.loadUrl(normalize(text));setActive(this);saveSession();}
         void paneMenu() {
             setActive(this);
-            String[] actions={"Bookmark page","Desktop mode: "+(desktop?"ON":"OFF"),"Save screenshot","Copy address","Share link","Move left/up","Move right/down","Close pane"};
+            String[] actions={
+                "★ Bookmark page",
+                "Desktop mode: "+(desktop?"ON":"OFF"),
+                "Save screenshot",
+                "Copy page address",
+                "Share link",
+                "Duplicate view",
+                "Open in another browser",
+                "Zoom in",
+                "Zoom out",
+                "Move view left/up",
+                "Move view right/down",
+                "Close this view"
+            };
             new AlertDialog.Builder(MainActivity.this).setTitle("View "+(panes.indexOf(this)+1))
-                .setItems(actions,(d,which)->{
+                .setItems(actions,(dialog,which)->{
                     String url=web.getUrl();
                     switch(which){
-                        case 0: bookmark(url);break;
+                        case 0:bookmark(url);break;
                         case 1:
                             desktop=!desktop;
-                            WebSettings s=web.getSettings();
-                            s.setUserAgentString(desktop?DESKTOP_UA:WebSettings.getDefaultUserAgent(MainActivity.this));
-                            s.setUseWideViewPort(true);web.reload();saveSession();break;
-                        case 2: screenshot(this);break;
+                            WebSettings settings=web.getSettings();
+                            settings.setUserAgentString(desktop?DESKTOP_UA:
+                                WebSettings.getDefaultUserAgent(MainActivity.this));
+                            settings.setUseWideViewPort(true);
+                            web.reload();saveSession();break;
+                        case 2:screenshot(this);break;
                         case 3:
-                            ((ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("URL",url==null?"":url));
+                            ((ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(
+                                ClipData.newPlainText("URL",url==null?"":url));
                             toast("Copied");break;
                         case 4:
-                            Intent send=new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_TEXT,url);
+                            Intent send=new Intent(Intent.ACTION_SEND);
+                            send.setType("text/plain");
+                            send.putExtra(Intent.EXTRA_TEXT,url);
                             startActivity(Intent.createChooser(send,"Share page"));break;
-                        case 5: movePane(this,-1);break;
-                        case 6: movePane(this,1);break;
-                        case 7:removePane(panes.indexOf(this));break;
+                        case 5:
+                            if(panes.size()<MAX_PANES)addPane(url==null?"about:blank":url,desktop);
+                            else toast("Maximum 20 views");
+                            break;
+                        case 6:
+                            if(url!=null && (url.startsWith("https://")||url.startsWith("http://"))) {
+                                try{
+                                    Intent intent=new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+                                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                                    startActivity(intent);
+                                }catch(Exception ex){toast("No compatible browser installed");}
+                            }else toast("No website to open");
+                            break;
+                        case 7:web.zoomIn();break;
+                        case 8:web.zoomOut();break;
+                        case 9:movePane(this,-1);break;
+                        case 10:movePane(this,1);break;
+                        case 11:removePane(panes.indexOf(this));break;
                     }
                 }).show();
         }

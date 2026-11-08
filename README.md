@@ -14,7 +14,7 @@ A native Android multi-pane browser rebuilt from independently written source fo
 
 **GitHub Release:** https://github.com/alwansan/MultiView-Browser/releases/tag/preview-latest
 
-**Status:** Prototype v0.1.0. Compilation, device compatibility and behavioral parity are tested in stages; do not confuse repository commit with a proven working APK. Android can still reclaim WebView renderer memory.
+**Status:** v0.2.2 experimental: Fit Grid, Scroll Grid, Vertical, Horizontal and Focus; loading indicators, browser popups, per-pane Desktop flags, quick ChatGPT link, saved library, pane duplication and zoom controls. Compilation, device compatibility and behavioral parity are tested in stages; do not confuse repository commit with a proven working APK. Android can still reclaim WebView renderer memory.
 
 ### Building
 

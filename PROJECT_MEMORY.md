@@ -81,3 +81,8 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Android Back in single Focus mode returns to grid when no website history is left and multiple pages exist.
 - Only mailto/tel/sms URI schemes dispatched to external apps; other non-http(s) external schemes blocked.
 - Source remains original. New versionCode 4 and v0.2.1-preview. Actions and device validation pending.
+
+## v0.2.2 workflow improvement — 2026-11-08
+- Multi-URL distributor now splits by line (not whitespace) and loads URLs directly, retaining active selection, and performs one session persistence update. This avoids doing a full layout reflow per URL. Supports a single URL in all panes, or per-pane lines.
+- Pane overflow now includes Duplicate view, open in external browser, zoom +/- alongside bookmark, Desktop mode, screenshot, copy, share, move, close.
+- Version code 5, version 0.2.2-preview. Verify new Actions result + release SHA; phone screenshot and runtime checks still needed.

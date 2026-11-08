@@ -33,3 +33,8 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED, runtime unverified] Popup tab transport for user gestures, per-pane desktop UA restore, batched pane counts, explicit WebView removal, restricted external URI dispatch, Focus Back returns to Grid.
 - [PENDING] Build + publication / APK SHA.
 - [PENDING] User Android 15 five-pane, ChatGPT login, target-blank, desktop and restoration tests.
+
+## 2026-11-08 — v0.2.2 URL/toolbar refinements
+- [IMPLEMENTED, runtime unverified] Multi-link distributor splits on newlines; preserves pane selection and avoids per-pane layout reflow.
+- [IMPLEMENTED, runtime unverified] Per-pane duplicate, external browser hand-off, zoom in/out.
+- [PENDING] New build and updated release.
