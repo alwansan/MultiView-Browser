@@ -96,13 +96,48 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish rolling experimental APK
+      - name: Publish versioned experimental APK on GitHub Releases
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if ! gh release view preview-latest >/dev/null 2>&1; then
-            gh release create preview-latest --title "MultiView Browser · experimental preview" --notes "Automated build of the latest main. Development-only, not device-validated. Download app-debug.apk below." --prerelease --target "$GITHUB_SHA"
+          set -euo pipefail
+          apk="app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$apk"
+          version="$(sed -n "s/.*versionName '\([^']*\)'.*/\1/p" app/build.gradle | head -1)"
+          test -n "$version"
+          tag="v$version"
+          sha256sum "$apk" | sed 's#app/build/outputs/apk/debug/##' > SHA256SUMS.txt
+          cat > release-notes.md <<EOF
+          # MultiView Browser $version
+
+          **English:** Experimental Android preview built from commit \`$GITHUB_SHA\`. Includes the bilingual (English/Arabic) project pages, adaptive app icon, multipane browsing, session recovery and selective privacy cleanup.
+
+          **العربية:** إصدار تجريبي لأندرويد من المصدر \`$GITHUB_SHA\`. يتضمن صفحتي المشروع العربية والإنجليزية، أيقونة جديدة، تصفح صفحات متعددة، تحسين استعادة الجلسة وتنظيفاً اختيارياً.
+
+          - Download: \`app-debug.apk\`
+          - Integrity: \`SHA256SUMS.txt\`
+          - This is a **debug-signed experimental APK**, unless repository signing secrets are configured.
+          - Android can still terminate background WebViews; no promise of indefinite page retention.
+          - Real-device validation is separate from successful CI builds.
+          EOF
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release edit "$tag" --notes-file release-notes.md
+            gh release upload "$tag" "$apk" SHA256SUMS.txt --clobber
+          else
+            gh release create "$tag" "$apk" SHA256SUMS.txt \
+              --title "MultiView Browser $version | متصفح العرض المتعدد" \
+              --notes-file release-notes.md --prerelease --target "$GITHUB_SHA"
           fi
-          gh release upload preview-latest app/build/outputs/apk/debug/app-debug.apk --clobber
+          echo "Versioned release published: $tag"
+
+      - name: Update rolling preview download
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release view preview-latest >/dev/null 2>&1; then
+            gh release create preview-latest --title "MultiView Browser · rolling preview" --notes "Rolling experimental APK, automatically replaced by successful main builds. See versioned releases for source-commit provenance." --prerelease --target "$GITHUB_SHA"
+          fi
+          gh release upload preview-latest app/build/outputs/apk/debug/app-debug.apk SHA256SUMS.txt --clobber
