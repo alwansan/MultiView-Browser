@@ -400,6 +400,7 @@ public final class MainActivity extends Activity {
             t(R.string.keep_session)+" · "+(keepAliveRequested()?t(R.string.on):t(R.string.off)),
             t(R.string.session_info),
             t(R.string.battery_settings),
+            t(R.string.cleanup),
             t(R.string.clear_history),
             t(R.string.clear_cookies),
             t(R.string.about)
@@ -446,11 +447,13 @@ public final class MainActivity extends Activity {
                             }).setNegativeButton(t(R.string.cancel),null).show();
                         break;
                     case 10:
+                        showCleanup();break;
+                    case 11:
                         new AlertDialog.Builder(this).setTitle(t(R.string.clear_history))
                             .setPositiveButton(t(R.string.clear),
                                 (d,w)->getPreferences(0).edit().remove("history").apply())
                             .setNegativeButton(t(R.string.cancel),null).show();break;
-                    case 11:
+                    case 12:
                         new AlertDialog.Builder(this).setTitle(t(R.string.clear_cookies))
                             .setMessage(t(R.string.clear_cookies_warning))
                             .setPositiveButton(t(R.string.clear),(d,w)->{
@@ -459,12 +462,69 @@ public final class MainActivity extends Activity {
                                 for(Pane p:panes)p.web.clearCache(true);
                                 getPreferences(0).edit().remove("history").apply();
                             }).setNegativeButton(t(R.string.cancel),null).show();break;
-                    case 12:
+                    case 13:
                         new AlertDialog.Builder(this).setTitle(t(R.string.about))
                             .setMessage(t(R.string.about_text))
                             .setPositiveButton(t(R.string.ok),null).show();break;
                 }
             }).show();
+    }
+    private void showCleanup(){
+        final String[] items={
+            t(R.string.clear_cache_resources),
+            t(R.string.clear_history)+" ("+readArray("history").length()+")",
+            t(R.string.clear_saved_lists)+" ("+readArray("savedBatches").length()+")",
+            t(R.string.close_blank_panes),
+            t(R.string.clear_cookies)
+        };
+        new AlertDialog.Builder(this).setTitle(t(R.string.cleanup))
+            .setItems(items,(dialog,choice)->confirmCleanup(choice,items[choice]))
+            .setNegativeButton(t(R.string.cancel),null).show();
+    }
+    private void confirmCleanup(int choice,String label){
+        String[] explanations={
+            t(R.string.clear_cache_explain),
+            t(R.string.clear_history_explain),
+            t(R.string.clear_lists_explain),
+            t(R.string.close_blank_explain),
+            t(R.string.clear_cookies_warning)
+        };
+        new AlertDialog.Builder(this).setTitle(label)
+            .setMessage(explanations[choice])
+            .setPositiveButton(t(R.string.clear),(dialog,which)->{
+                switch(choice){
+                    case 0:
+                        // WebView cache is application-wide, so clear it once only.
+                        if(!panes.isEmpty())panes.get(0).web.clearCache(true);
+                        break;
+                    case 1:
+                        getPreferences(0).edit().remove("history").apply();
+                        for(Pane p:panes)p.web.clearHistory();
+                        break;
+                    case 2:
+                        getPreferences(0).edit().remove("savedBatches").apply();
+                        break;
+                    case 3:
+                        for(int i=panes.size()-1;i>=0&&panes.size()>1;i--){
+                            Pane pane=panes.get(i);
+                            String url=pane.web.getUrl();
+                            if("about:blank".equals(pane.initialUrl) &&
+                                (url==null||"about:blank".equals(url))){
+                                panes.remove(i);
+                                disposePane(pane);
+                            }
+                        }
+                        active=Math.min(active,panes.size()-1);
+                        renderLayout();rebuildChrome();saveSession();
+                        break;
+                    case 4:
+                        CookieManager.getInstance().removeAllCookies(ok->
+                            CookieManager.getInstance().flush());
+                        break;
+                }
+                toast(t(R.string.cleanup_complete));
+            })
+            .setNegativeButton(t(R.string.cancel),null).show();
     }
     private void applyAwake() {
         if(keepAwake) getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

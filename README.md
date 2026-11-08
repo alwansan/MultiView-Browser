@@ -28,7 +28,7 @@ This rolling preview is a developer build. If Android rejects an update due to a
 - **Link workspace:** paste multiple URLs, reuse saved link lists, browse bookmarks and history.
 - **Arabic + English interface,** plus optional experimental darkening for website content.
 - **Session resilience:** restore URLs and settings, defer loading of offscreen panes on cold startup, and opt into a visible ongoing background service.
-- **Browser utilities:** downloads, file chooser, screenshots, desktop user-agent, in-page search and manual reload-all.
+- **Browser utilities:** downloads, file chooser, screenshots, desktop user-agent, in-page search, manual reload-all and **selective privacy cleanup**.
 
 ### Choose a layout
 

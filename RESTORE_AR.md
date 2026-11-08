@@ -26,3 +26,6 @@ v0.4.0: جلسات الخلفية opt-in باستخدام SessionKeepAliveServic
 
 
 v0.4.0 النهائي الحالي: Actions 42506003292 نجح، SHA 6788d8aec8e91a23ceee72a44fbd0d541f2cdb3e48150ff252170b74f011ef24، APK https://github.com/alwansan/MultiView-Browser/releases/download/preview-latest/app-debug.apk. اقرأ docs/BACKGROUND_RELIABILITY_AR.md وdocs/SIGNING_SETUP_AR.md. عدم إعادة التحميل أبداً مستحيل على Android بدون ضمانات النظام؛ تحقق على الجهاز، وحافظ على سلوك Back minimization وWebView.renderer recovery ولا تعد بإبقاء DOM بعد قتل العملية.
+
+
+التحديث البصري: README إنجليزي + README.ar.md عربي، وأيقونات SVG وأيقونة Adaptive Android، تحسين تمييز الصفحة النشطة. الإصدار v0.4.2 يضيف Privacy & cleanup اختياري دون تنظيف آلي. راجع أحدث Actions والـAPK قبل إعطاء أي تأكيد. الصور بالمستودع تصاميم توضيحية وليست screenshots فعلية.

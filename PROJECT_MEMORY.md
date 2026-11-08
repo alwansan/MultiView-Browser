@@ -169,3 +169,8 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 - Android minimum API 26 so mipmap-anydpi-v26 adaptive icons are supported. Source reference https://developer.android.com/develop/ui/compose/system/icon_design_adaptive.
 - Brand assets validated as SVG and Android XML in scripts/brand_audit.py; CI gate added.
 - App version 0.4.1-preview, versionCode 9. Await Actions/device verification.
+
+## 2026-11-08 v0.4.2 selective cleanup and UI maintenance
+- User asked for "التنظيف" and polish. Added privacy/cleanup menu with five independently confirmed operations: app-wide WebView resource cache; visit + navigation history; saved URL batches; genuinely blank tabs only; cookies only. No operation silently clears session/active pages.
+- Clearing cache does not equal clearing all Chromium storage; localStorage/IndexedDB may remain, as documented by Android/OWASP. Cookies action signs out and has warning; cleanup is never scheduled/automatic.
+- Bumped versionCode 10, versionName 0.4.2-preview. Build and on-device validation pending. Styled app icon/header and bilingual repo from 0.4.1 retained.

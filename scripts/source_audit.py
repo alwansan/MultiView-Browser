@@ -99,3 +99,11 @@ assert 'new RippleDrawable(' in source
 assert 'android:icon="@mipmap/ic_launcher"' in manifest
 assert 'android:theme="@style/MultiViewTheme"' in manifest
 print('Branding and launcher integration guards passed.')
+
+# Privacy cleanup remains opt-in, scoped and non-destructive to live websites.
+assert 'showCleanup()' in source and 'confirmCleanup(int choice,String label)' in source
+assert 'clearCache(true)' in source and 'p.web.clearHistory()' in source
+assert 'remove("savedBatches")' in source
+assert 'if("about:blank".equals(pane.initialUrl)' in source
+assert 'getPreferences(0).edit().remove("session")' not in source
+print('Selective cleanup source guards passed.')

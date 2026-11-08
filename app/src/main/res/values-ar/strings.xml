@@ -131,4 +131,13 @@
     <string name="battery_settings">إعدادات البطارية والخلفية</string>
     <string name="battery_help">في أجهزة شاومي وبوكو، افتح إعدادات هذا التطبيق ثم موفّر البطارية واختر «بلا قيود» إذا ظهر. اسمح بنشاط الخلفية إن توفر. هذا قد يخفف القيود لكنه لا يمنع أندرويد من إنهاء التطبيق عند نقص الذاكرة.</string>
     <string name="open_settings">فتح إعدادات التطبيق</string>
+    <string name="cleanup">الخصوصية والتنظيف</string>
+    <string name="clear_cache_resources">مسح ذاكرة الويب المؤقتة</string>
+    <string name="clear_cache_explain">يمسح الملفات المؤقتة المشتركة بين الصفحات. لن يحدث الصفحات المفتوحة عمداً، لكن الطلبات القادمة قد تحتاج تنزيل البيانات مجدداً. لا تُمسح ملفات الارتباط أو التخزين المحلي.</string>
+    <string name="clear_history_explain">يمسح سجل الزيارات وقائمة الرجوع والتقدم داخل كل صفحة. تبقى الصفحات الحالية مفتوحة.</string>
+    <string name="clear_saved_lists">مسح قوائم الروابط المحفوظة</string>
+    <string name="clear_lists_explain">يحذف مجموعات الروابط المتعددة المحفوظة فقط. لا يحذف المفضلة أو السجل أو الصفحات المفتوحة.</string>
+    <string name="close_blank_panes">إغلاق الصفحات الفارغة</string>
+    <string name="close_blank_explain">يغلق الصفحات الجديدة الفارغة فقط التي لم تُفتح فيها مواقع. يُبقي صفحة واحدة على الأقل ولا يغلق المواقع المحفوظة المؤجلة.</string>
+    <string name="cleanup_complete">اكتملت عملية التنظيف المحددة</string>
 </resources>

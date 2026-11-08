@@ -88,3 +88,8 @@ Do not convert PENDING into PASS without run/device evidence.
 - [IMPLEMENTED/CI PENDING] English/Arabic README landing pages with clickable switch, original SVG icon/banners/features/layouts and clearly marked concept illustrations.
 - [IMPLEMENTED/CI PENDING] Android adaptive launcher icon and monochrome themed icon, branded notification icon, new theme/brand colors, active-pane accent border, ripple button feedback.
 - [IMPLEMENTED/CI PENDING] CI script validates SVG/XML assets and local bilingual links; v0.4.1 preview build.
+
+## 2026-11-08 v0.4.2 selective cleanup
+- [IMPLEMENTED, CI PENDING] Cleanup menu with separate confirmation for resource cache, visit/back history, saved URL groups, blank panes and cookies.
+- [IMPLEMENTED, CI PENDING] Arabic/English cleanup strings; normal panes remain active and a truly blank-only predicate prevents removing deferred saved websites.
+- [PENDING] Android device validation: clear cache without refresh; delete saved groups; preserve saved sessions and browser logins unless cookies specifically selected.

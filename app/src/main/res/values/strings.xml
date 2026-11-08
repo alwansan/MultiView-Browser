@@ -131,4 +131,13 @@
     <string name="battery_settings">Battery / background settings</string>
     <string name="battery_help">On Xiaomi/POCO, open the application settings, find Battery saver and choose No restrictions if available. Also allow background activity if offered. This may reduce restrictions, but Android can still close the app when memory is low.</string>
     <string name="open_settings">Open app settings</string>
+    <string name="cleanup">Privacy &amp; cleanup</string>
+    <string name="clear_cache_resources">Clear temporary web cache</string>
+    <string name="clear_cache_explain">Deletes the shared resource cache for all tabs. Open pages are not intentionally reloaded. Later requests may need more network data. Cookies and local website storage are not cleared.</string>
+    <string name="clear_history_explain">Clears recent visit history and each page\'s Back/Forward navigation list. The current pages remain open.</string>
+    <string name="clear_saved_lists">Clear saved link lists</string>
+    <string name="clear_lists_explain">Deletes saved multi-link groups only. Individual bookmarks, history and currently open pages are not deleted.</string>
+    <string name="close_blank_panes">Close empty pages</string>
+    <string name="close_blank_explain">Closes only \'about:blank\' new pages that have not navigated to a website. Keeps at least one page and will not close deferred saved websites.</string>
+    <string name="cleanup_complete">Selected cleanup complete</string>
 </resources>
