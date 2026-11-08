@@ -144,3 +144,7 @@ Build owner-controlled Android app in https://github.com/alwansan/MultiView-Brow
 ## Configuration-change protection
 - Manifest now explicitly handles locale/layoutDirection/size/screenLayout/fontScale/uiMode so Activity normally keeps existing WebViews alive when Android 13+ per-app language changes or window dimensions shift.
 - onConfigurationChanged re-renders containers and toolbar while Pane.styleCard updates URL input hint in selected locale; historical Android <=12 language-picker path still explicitly recreates Activity and can reload. Confirm on real Android device.
+
+## Owner device optimization / permission details
+- Settings now exposes Battery/background help opening native app details screen. Xiaomi's official support says No restrictions can ease battery background/network limitations, but not guarantee lifetime; see https://www.mi.com/global/support/faq/details/KA-538010/.
+- When activating foreground session guard on Android 13+ the app requests notification permission so the ongoing notification can be visible; service still uses FGS platform support, and user can switch it off.

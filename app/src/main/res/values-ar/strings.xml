@@ -128,4 +128,7 @@
     <string name="append_one">إضافة الرابط</string>
     <string name="no_saved_links">ستظهر هنا روابطك المحفوظة والسجل</string>
     <string name="link_set_saved">تم حفظ قائمة الروابط</string>
+    <string name="battery_settings">إعدادات البطارية والخلفية</string>
+    <string name="battery_help">في أجهزة شاومي وبوكو، افتح إعدادات هذا التطبيق ثم موفّر البطارية واختر «بلا قيود» إذا ظهر. اسمح بنشاط الخلفية إن توفر. هذا قد يخفف القيود لكنه لا يمنع أندرويد من إنهاء التطبيق عند نقص الذاكرة.</string>
+    <string name="open_settings">فتح إعدادات التطبيق</string>
 </resources>

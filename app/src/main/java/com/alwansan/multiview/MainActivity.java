@@ -144,6 +144,11 @@ public final class MainActivity extends Activity {
     private void setSessionGuard(boolean enabled){
         try{
             if(enabled){
+                if(Build.VERSION.SDK_INT>=33 &&
+                   checkSelfPermission("android.permission.POST_NOTIFICATIONS") !=
+                       android.content.pm.PackageManager.PERMISSION_GRANTED){
+                    requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"},930);
+                }
                 Intent intent=new Intent(this,SessionKeepAliveService.class);
                 if(Build.VERSION.SDK_INT>=26)startForegroundService(intent);
                 else startService(intent);
@@ -365,6 +370,7 @@ public final class MainActivity extends Activity {
             t(R.string.copy_urls),
             t(R.string.keep_session)+" · "+(keepAliveRequested()?t(R.string.on):t(R.string.off)),
             t(R.string.session_info),
+            t(R.string.battery_settings),
             t(R.string.clear_history),
             t(R.string.clear_cookies),
             t(R.string.about)
@@ -399,11 +405,23 @@ public final class MainActivity extends Activity {
                                 t(R.string.renderer_lost_count)+": "+rendererDeaths)
                             .setPositiveButton(t(R.string.ok),null).show();break;
                     case 9:
+                        new AlertDialog.Builder(this).setTitle(t(R.string.battery_settings))
+                            .setMessage(t(R.string.battery_help))
+                            .setPositiveButton(t(R.string.open_settings),(d,w)->{
+                                try{
+                                    Intent intent=new Intent(
+                                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.fromParts("package",getPackageName(),null));
+                                    startActivity(intent);
+                                }catch(Exception exception){toast(t(R.string.keepalive_unavailable));}
+                            }).setNegativeButton(t(R.string.cancel),null).show();
+                        break;
+                    case 10:
                         new AlertDialog.Builder(this).setTitle(t(R.string.clear_history))
                             .setPositiveButton(t(R.string.clear),
                                 (d,w)->getPreferences(0).edit().remove("history").apply())
                             .setNegativeButton(t(R.string.cancel),null).show();break;
-                    case 10:
+                    case 11:
                         new AlertDialog.Builder(this).setTitle(t(R.string.clear_cookies))
                             .setMessage(t(R.string.clear_cookies_warning))
                             .setPositiveButton(t(R.string.clear),(d,w)->{
@@ -412,7 +430,7 @@ public final class MainActivity extends Activity {
                                 for(Pane p:panes)p.web.clearCache(true);
                                 getPreferences(0).edit().remove("history").apply();
                             }).setNegativeButton(t(R.string.cancel),null).show();break;
-                    case 11:
+                    case 12:
                         new AlertDialog.Builder(this).setTitle(t(R.string.about))
                             .setMessage(t(R.string.about_text))
                             .setPositiveButton(t(R.string.ok),null).show();break;
